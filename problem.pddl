@@ -1,0 +1,84 @@
+(define (problem nao_choreography_problem)
+  (:domain nao_choreography)
+  (:objects
+    Standing Sitting Crouch - posture
+    phase0 phase1 phase2 phase3 phase4 phase5 phase6 - phase
+    p1_standinit p2_armsopening p3_crouch p4_sit p5_sitrelax p6_stand - move
+    m_disco m_voneyes m_wipeforehead m_rightarm m_newdance - move
+  )
+
+  (:init
+    (current_phase phase0)
+    (at_posture Standing)
+
+    (next_phase phase0 phase1)
+    (next_phase phase1 phase2)
+    (next_phase phase2 phase3)
+    (next_phase phase3 phase4)
+    (next_phase phase4 phase5)
+    (next_phase phase5 phase6)
+
+    ;; Mandatory assignments (P1..P6)
+    (is_mandatory p1_standinit phase0)
+    (valid_pre p1_standinit Standing)
+    (valid_post p1_standinit Standing)
+
+    (is_mandatory p2_armsopening phase1)
+    (valid_pre p2_armsopening Standing)
+    (valid_post p2_armsopening Standing)
+
+    (is_mandatory p3_crouch phase2)
+    (valid_pre p3_crouch Standing)
+    (valid_post p3_crouch Crouch)
+
+    (is_mandatory p4_sit phase3)
+    (valid_pre p4_sit Crouch)
+    (valid_post p4_sit Sitting)
+
+    (is_mandatory p5_sitrelax phase4)
+    (valid_pre p5_sitrelax Sitting)
+    (valid_post p5_sitrelax Sitting)
+
+    (is_mandatory p6_stand phase5)
+    (valid_pre p6_stand Sitting)
+    (valid_post p6_stand Standing)
+
+    ;; Intermediate moves
+    (requires_phase m_disco phase1)
+    (valid_pre m_disco Standing)
+    (valid_post m_disco Standing)
+
+    (requires_phase m_voneyes phase1)
+    (valid_pre m_voneyes Standing)
+    (valid_post m_voneyes Standing)
+
+    (requires_phase m_wipeforehead phase1)
+    (valid_pre m_wipeforehead Standing)
+    (valid_post m_wipeforehead Standing)
+
+    (requires_phase m_rightarm phase1)
+    (valid_pre m_rightarm Standing)
+    (valid_post m_rightarm Standing)
+
+    (requires_phase m_newdance phase1)
+    (valid_pre m_newdance Standing)
+    (valid_post m_newdance Standing)
+
+  )
+
+  (:goal (and
+    (current_phase phase6)
+    (at_posture Standing)
+    (mandatory_done phase0)
+    (mandatory_done phase1)
+    (mandatory_done phase2)
+    (mandatory_done phase3)
+    (mandatory_done phase4)
+    (mandatory_done phase5)
+    (move_done m_disco)
+    (move_done m_voneyes)
+    (move_done m_wipeforehead)
+    (move_done m_rightarm)
+    (move_done m_newdance)
+  ))
+)

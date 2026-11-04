@@ -1,0 +1,1384 @@
+{
+  "dab.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "DanceMove.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "Disco.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "finger_snap.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "guitar.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "Hello.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "high_clap.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "new_dance.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "new_hiphop.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "new_speedy.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "new_superman.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "proud.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "sitting_handkiss.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Any",
+    "post_posture": "Sitting",
+    "energy": 3,
+    "displacement": false
+  },
+  "sitting_mood.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Any",
+    "post_posture": "Sitting",
+    "energy": 3,
+    "displacement": false
+  },
+  "sitting_wavess.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Any",
+    "post_posture": "Sitting",
+    "energy": 3,
+    "displacement": false
+  },
+  "ThrillerArmSideways.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "ThrillerClap.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "ThrillerSnapSnap.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "VOnEyes.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "whip.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "WipeForehead.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "1-Rotation_handgun_object.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "10-Diagonal_right.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": true
+  },
+  "11-Stand.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "12-Rotation_foot_RLeg.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "13-Rotation_foot_LLeg.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "14-StandInit.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "15-StandZero.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "16-Sit.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Any",
+    "post_posture": "Sitting",
+    "energy": 3,
+    "displacement": false
+  },
+  "17-SitRelax.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Sitting",
+    "post_posture": "Sitting",
+    "energy": 3,
+    "displacement": false
+  },
+  "2-Right_arm.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "3-Double_movement.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "4-Arms_opening.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "5-Union_arms.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "6-Crouch.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 2.5,
+    "pre_posture": "Standing",
+    "post_posture": "Crouch",
+    "energy": 3,
+    "displacement": false
+  },
+  "7-Move_forward.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": true
+  },
+  "8-Move_backward.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": true
+  },
+  "9-Diagonal_left.py": {
+    "source": "CoursePositions",
+    "type": "python",
+    "duration": 4.5,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": true
+  },
+  "xar_Goto (name)": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Creation\\Goto (name)\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Goto (number)": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Creation\\Goto (number)\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Play": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Creation\\Play\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Stop": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Creation\\Stop\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Timeline": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Creation\\Timeline\\behavior.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_FastGatherBothHandsOnChest_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\FastGatherBothHandsOnChest_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_GatherBothHandsInFront_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\GatherBothHandsInFront_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Affirmation_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\GoToStance_Affirmation_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Affirmation_Flex": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\GoToStance_Affirmation_Flex\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Affirmation_LeanLeft": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\GoToStance_Affirmation_LeanLeft\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Affirmation_LeanRight": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\GoToStance_Affirmation_LeanRight\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LittleBothArmsBump_DuckEnd_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\LittleBothArmsBump_DuckEnd_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_OfferBothHands_HeadNod_LeanLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\OfferBothHands_HeadNod_LeanLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_SlowBowWithArms_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\SlowBowWithArms_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 2,
+    "displacement": false
+  },
+  "xar_StrongArmsAndLegsBump_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\StrongArmsAndLegsBump_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_StrongLeftArmInFront_LeanLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\StrongLeftArmInFront_LeanLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_WideGatherBothHandsOnChest_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\WideGatherBothHandsOnChest_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_WideOpenBothHands_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Affirmation\\Pepper\\WideOpenBothHands_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_DoubleLeftHandBump_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\DoubleLeftHandBump_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_DoubleRightHandBump_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\DoubleRightHandBump_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_GoToStance_Enumeration_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\GoToStance_Enumeration_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Enumeration_LeanRight": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\GoToStance_Enumeration_LeanRight\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LeftArmBump_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\LeftArmBump_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_LeftArmSpreadAndBack_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\LeftArmSpreadAndBack_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LittleFancyBothArmsInFront_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\LittleFancyBothArmsInFront_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_OfferLeftHandThenRightHand_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\OfferLeftHandThenRightHand_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_OpenBothHandsInFrontWithBump_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Enumeration\\Pepper\\OpenBothHandsInFrontWithBump_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_BothArmsShowGround_LeanBack_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\BothArmsShowGround_LeanBack_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_CircleBothArmsLeaningFront_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\CircleBothArmsLeaningFront_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_FastBothArmsInFront_LeanLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\FastBothArmsInFront_LeanLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_GoToStance_Exclamation_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\GoToStance_Exclamation_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Exclamation_Flex": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\GoToStance_Exclamation_Flex\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Exclamation_LeanBack": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\GoToStance_Exclamation_LeanBack\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Exclamation_LeanLeft": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\GoToStance_Exclamation_LeanLeft\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Exclamation_LeanRight": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\GoToStance_Exclamation_LeanRight\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LeftArmOnChest_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\LeftArmOnChest_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LittleArmsUpAndDownWithBump_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\LittleArmsUpAndDownWithBump_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_SpreadArms_FlexEnd_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\SpreadArms_FlexEnd_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_StrongNodArmsUpAndDownLeaningBack_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\StrongNodArmsUpAndDownLeaningBack_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_StrongNodGatherArmsInFront_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\StrongNodGatherArmsInFront_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_WideBothArmsCircle_LeanLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Exclamation\\Pepper\\WideBothArmsCircle_LeanLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_BothArmsUpAndDown_HeadShake_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\BothArmsUpAndDown_HeadShake_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_DoubleHorizontalBumpRightArm_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\DoubleHorizontalBumpRightArm_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_GoToStance_Negation_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\GoToStance_Negation_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Negation_LeanLeft": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\GoToStance_Negation_LeanLeft\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LittleSpreadRightArm_HeadShake_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\LittleSpreadRightArm_HeadShake_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_RightArmUpAndDownWithBump_HeadShake_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\RightArmUpAndDownWithBump_HeadShake_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_StrongBothArmsUpAndDown_LeanLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\StrongBothArmsUpAndDown_LeanLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_WideHorizontalRightArm_LeanLeft_HeadShake_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Negation\\Pepper\\WideHorizontalRightArm_LeanLeft_HeadShake_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_FancyRightArmCircle_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\FancyRightArmCircle_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Question_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\GoToStance_Question_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Question_Flex": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\GoToStance_Question_Flex\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Question_LeanFront": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\GoToStance_Question_LeanFront\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Question_LeanRight": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\GoToStance_Question_LeanRight\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_LittleArmsBumpInFront_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\LittleArmsBumpInFront_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_LittleArmsBump_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\LittleArmsBump_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_LittleBowAndSpreadArms_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\LittleBowAndSpreadArms_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 2,
+    "displacement": false
+  },
+  "xar_SlowlyOfferBothHands_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\SlowlyOfferBothHands_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_StrongHeadShakeSpreadArms_FlexEnd_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\StrongHeadShakeSpreadArms_FlexEnd_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_WideSpreadArms_FlexEnd_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Question\\Pepper\\WideSpreadArms_FlexEnd_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_BothHandsBumpWithBump_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\BothHandsBumpWithBump_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_FastPointAtUserLeftArm_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\FastPointAtUserLeftArm_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_GoToStance_Self&Others_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\GoToStance_Self&Others_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Self&Others_Flex": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\GoToStance_Self&Others_Flex\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Self&Others_LeanBack": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\GoToStance_Self&Others_LeanBack\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Self&Others_LeanFront": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\GoToStance_Self&Others_LeanFront\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Self&Others_LeanRight": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\GoToStance_Self&Others_LeanRight\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_OpenArmInFrontWithBump_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\OpenArmInFrontWithBump_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_PointAtSelfRightArm_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\PointAtSelfRightArm_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_PointAtUserBothHands_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\PointAtUserBothHands_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_StrictPointAtUserRightArm_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\StrictPointAtUserRightArm_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_WidePointAtUserRightArm_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Self & others\\Pepper\\WidePointAtUserRightArm_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_BothArmsBumpInFront_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\BothArmsBumpInFront_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_BothArmsBump_LeanRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\BothArmsBump_LeanRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_GoToStance_Space&Time_Center": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\GoToStance_Space&Time_Center\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Space&Time_LeanLeft": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\GoToStance_Space&Time_LeanLeft\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_GoToStance_Space&Time_LeanRight": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\GoToStance_Space&Time_LeanRight\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_PointFrontLeftArm_LeanLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\PointFrontLeftArm_LeanLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_ShowFarDistanceLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\ShowFarDistanceLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_ShowNearDistanceLeft_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\ShowNearDistanceLeft_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_ShowNearDistanceRight_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\ShowNearDistanceRight_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_StrongArmsOpen_FlexEnd_01": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Dialog animations\\Space & time\\Pepper\\StrongArmsOpen_FlexEnd_01\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_Elephant": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Animals\\Pepper\\Elephant\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Gorilla": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Animals\\Pepper\\Gorilla\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Mouse": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Animals\\Pepper\\Mouse\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Disco": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Dances\\Pepper\\Disco\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_Headbang": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Dances\\Pepper\\Headbang\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_Tai Chi Chuan": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Dances\\Pepper\\Tai Chi Chuan\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Mystical": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Fun\\Pepper\\Mystical\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_TakePicture": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Fun\\Pepper\\TakePicture\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Vacuum": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Fun\\Pepper\\Vacuum\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Guitar": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Music\\Pepper\\Guitar\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Saxophone": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Music\\Pepper\\Saxophone\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Football": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Sports\\Pepper\\Football\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Golf": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Entertainment\\Sports\\Pepper\\Golf\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Bored": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Negative\\Pepper\\Bored\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 1,
+    "displacement": false
+  },
+  "xar_Confused": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Negative\\Pepper\\Confused\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  },
+  "xar_Fear": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Negative\\Pepper\\Fear\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 1,
+    "displacement": false
+  },
+  "xar_Chill": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Neutral\\Pepper\\Chill\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 1,
+    "displacement": false
+  },
+  "xar_Curious": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Neutral\\Pepper\\Curious\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 2,
+    "displacement": false
+  },
+  "xar_Thinking": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Neutral\\Pepper\\Thinking\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 1,
+    "displacement": false
+  },
+  "xar_Excited": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Positive\\Pepper\\Excited\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 4,
+    "displacement": false
+  },
+  "xar_Happy": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Positive\\Pepper\\Happy\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 2,
+    "displacement": false
+  },
+  "xar_Kisses": {
+    "source": "ChoregrapheLibrary",
+    "type": "xar",
+    "file": "C:\\Program Files (x86)\\Softbank Robotics\\Choregraphe Suite 2.8\\share\\choregraphe\\libraries\\box\\Animation\\Moods\\Positive\\Pepper\\Kisses\\box.xar",
+    "duration": 4.0,
+    "pre_posture": "Standing",
+    "post_posture": "Standing",
+    "energy": 3,
+    "displacement": false
+  }
+}

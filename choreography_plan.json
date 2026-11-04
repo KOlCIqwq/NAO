@@ -1,0 +1,96 @@
+{
+  "song_file": "classic_hit.wav",
+  "total_duration": 114.0,
+  "moves": [
+    "14-StandInit.py",
+    "VOnEyes.py",
+    "Disco.py",
+    "new_dance.py",
+    "WipeForehead.py",
+    "2-Right_arm.py",
+    "4-Arms_opening.py",
+    "6-Crouch.py",
+    "16-Sit.py",
+    "17-SitRelax.py",
+    "11-Stand.py"
+  ],
+  "details": [
+    {
+      "step": 1,
+      "type": "MANDATORY",
+      "symbol": "p1_standinit",
+      "file": "14-StandInit.py",
+      "estimated_duration": 6.0
+    },
+    {
+      "step": 2,
+      "type": "INTERMEDIATE",
+      "symbol": "m_voneyes",
+      "file": "VOnEyes.py",
+      "estimated_duration": 8.0
+    },
+    {
+      "step": 3,
+      "type": "INTERMEDIATE",
+      "symbol": "m_disco",
+      "file": "Disco.py",
+      "estimated_duration": 12.5
+    },
+    {
+      "step": 4,
+      "type": "INTERMEDIATE",
+      "symbol": "m_newdance",
+      "file": "new_dance.py",
+      "estimated_duration": 7.0
+    },
+    {
+      "step": 5,
+      "type": "INTERMEDIATE",
+      "symbol": "m_wipeforehead",
+      "file": "WipeForehead.py",
+      "estimated_duration": 5.5
+    },
+    {
+      "step": 6,
+      "type": "INTERMEDIATE",
+      "symbol": "m_rightarm",
+      "file": "2-Right_arm.py",
+      "estimated_duration": 5.0
+    },
+    {
+      "step": 7,
+      "type": "MANDATORY",
+      "symbol": "p2_armsopening",
+      "file": "4-Arms_opening.py",
+      "estimated_duration": 24.0
+    },
+    {
+      "step": 8,
+      "type": "MANDATORY",
+      "symbol": "p3_crouch",
+      "file": "6-Crouch.py",
+      "estimated_duration": 10.0
+    },
+    {
+      "step": 9,
+      "type": "MANDATORY",
+      "symbol": "p4_sit",
+      "file": "16-Sit.py",
+      "estimated_duration": 10.0
+    },
+    {
+      "step": 10,
+      "type": "MANDATORY",
+      "symbol": "p5_sitrelax",
+      "file": "17-SitRelax.py",
+      "estimated_duration": 10.0
+    },
+    {
+      "step": 11,
+      "type": "MANDATORY",
+      "symbol": "p6_stand",
+      "file": "11-Stand.py",
+      "estimated_duration": 16.0
+    }
+  ]
+}
