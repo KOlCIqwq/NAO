@@ -1380,5 +1380,11 @@
     "post_posture": "Standing",
     "energy": 3,
     "displacement": false
+  },
+  "astley_arm_sway.py": {
+    "duration": 6.0,
+    "energy": 4.5,
+    "type": "dance",
+    "limbs": "arms_and_head"
   }
 }

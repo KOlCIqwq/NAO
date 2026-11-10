@@ -1,0 +1,254 @@
+Fundamentals of Artificial Intelligence
+Fundamentalsof Artificial Intelligence
+NAO Planning Competition
+Dipartimentodi Informatica – Scienza e Ingegneria 
+Università di Bologna
+prof. Michela Milano
+Allegra De Filippo, Chiara Bellatreccia, Matteo Francobaldi
+1For internal didactic use
+• To stimulate the comprehension and the
+discussion regarding the basic algorithm for
+planning, in the context of AI discipline
+• To test your skill on a fun and intuitive case
+study: the humanoid NAO robot
+• To WIN the competition!
+2
+NAO Planning –
+objective of the competition
+NAO Planning –
+objective of the competition
+NAO Robot – some info
+NAO Robot –
+some info
+3
+NAO Robot – some info
+NAO Robot –
+some info
+SENSE
+• 2 HD camera
+• 4 microphones
+• 2 bumpers
+• 2 sonars
+4
+MOVE
+• 25 degrees of freedom
+• Motors controlled by 
+software
+• Complex movement 
+capabilities
+INTERACT
+• 2 speakers
+• multiple LEDs
+• tactile sensors
+• prensile hands
+• infrared sensors
+• WiFi connection
+THINK
+• Intel Atom 1,6 GHz CPU
+• 1 Gb RAM
+• 8 Gb Flash Memory
+• Software suite
+NAO Robot – some info
+NAO Robot –
+some info
+5
+NAO Robot – Software Suite
+NAO Robot –
+Software Suite
+6
+7
+NAO Robot – Choregraphe
+NAO Robot –
+Choregraphe
+A. Box libraries panel
+B. Flow diagram panel
+C. 3D Robot View for simulation
+A
+B
+C
+here to 
+download 
+Choregraphe
+NAO Robot – Choregraphe
+NAO Robot –
+Choregraphe
+8
+Performing NAO – AI and creativity
+Performing NAO –
+AI and creativity
+9
+• Performing Robots: automatic generation of theatrical 
+dance movements in robots
+The objectives of this project:
+• to devise techniques for automaticand creativegenerationof 
+complex movements in robots, such as choreographies
+• strong interdisciplinarity,involving robot learning, human-robot 
+interaction,cognitive studies of movement, creativity
+https://site.unibo.it/performingrobots/en
+NAO Planning–competition rules
+NAO Planning–
+competition rules
+10
+• Teamsdivided into groups of max 2 students
+• Each group must plan a choreography (sequence of positions)
+given a problem description
+• Each group must choose a music suitable for the choreography (by
+respecting the total time limit of 2 minutes) and test it on the
+virtual NAO (using Choregraphe). The script must be runnable on
+any platform in order to be tested.
+• A day of voting will then take place (during the last lectures) in
+which the winning choreography will be decided, considered the
+most satisfying from the artistic point of view
+NAO Planning – survey for voting day
+NAO Planning –
+survey for voting day
+11
+The survey questions are the following:
+• The performance embodies a theme or tellsa story
+• The performance has rhythmiccoherencewith music
+• The performer presents fluidityof movementtransitions
+• The performer is able to involvethe public
+• The performer extensively usesthe surroundingspace
+• The performer movements have humancharacterization
+• The choreography can be reproducedalsoby or with a humanperformer
+NAO Planning – problem description
+NAO Planning –
+problem description
+Modeling the problem
+12
+Initial state Goal
+?
+NAO Planning – problem description
+NAO Planning –
+problem description
+Mandatory positions
+13
+NAO Planning – competition rules
+NAO Planning –
+competition rules
+14
+• To move from a mandatory position to another, you can use positions from 
+the available set of intermediatepositions (see next slide)
+• Constraintsto be satisfied:
+possible incompatibilities between two consecutive positions (use
+simulator in choreographeto understandif and what they are)
+•
+•
+•
+time constraints
+constraints on the number of intermediate positions to be used in the 
+whole choreography(at least 5)
+• Generate an algorithm A able to plan the sequence of positions satisfying
+the given constraints (using a heuristic, or a planner for each sub-sequence
+of intermediate positions, ... we leave you free on the implementation
+choice)
+• Hint: use Python
+NAO Planning – problem description
+NAO Planning –
+problem description
+• P1…P6 = mandatory positions
+• A = algorithm to generate the transition between 2 
+mandatory positions by using the given pool of positions
+• T = total time of choreography (2 minutes)
+• A must use at least 5 of the intermediate positions in the set 
+and/or in the following .crg files
+15
+A A A A A
+P1 P2 P3 P4 P5 P6
+0 ………………………………………………………………………………………… T
+A A
+NAO Planning –
+set of intermediate positions
+NAO Planning –
+set of intermediate positions
+16
+• rotation_handgun_object: Nao makes a movement 
+with the arm holding (possibly) an object
+• right_arm: right arm rotation
+• double_movement:rotation of both upper limbs
+• arms_opening:opening and rotation of both upper 
+limbs
+• union_arms:movementof union of the arms
+• move_forward/backward:3 steps forward/backward
+• diagonal_left/diagonal_right:1 left/right diagonal step
+• rotation_foot_Lleg/foot_Rleg:movement with one foot
+NAO Planning –
+crg files (for other intermediate positions)
+NAO Planning –
+crg files (for other intermediate positions)
+17
+.crg files to import directly on Choregraphe[1]:
+• sing_with_me:NAO plays guitar
+• arm_dance:NAO dances by moving arms
+• birthday_dance:NAO dances birthday dance
+• sprinkler:NAO dances sprinkler dance
+• workout: NAO trains
+[1] Copyright © 2014 University of Notre Dame (F.U.N.Lab)
+NAO Planning – position description
+NAO Planning –
+position description
+18
+• All positions are coded in Python language and 
+executable on a simulated robot (see here for further 
+details of simulated NAO and here to download the 
+robot positions)
+• Choose a suitable music of 2 minutes of duration for 
+your choreography.
+N.B. Playing music cannot be tested on a simulated 
+robot. Your algorithm A needs to solve the problem for 
+simulated tests.
+Repository → https://github.com/ProjectsAI/NAO_Planning_Challenge
+NAO Planning – organization
+NAO Planning –
+organization
+• The demonstration and voting day will take place around the middle of
+December
+Important Dates:
+• sending projects by November 22 included (11.59 pm Italian time) on 
+Virtuale
+• presentation of projects, discussion, votes and winner (mandatory 
+presentation of the whole team): during the last lessons of Module 1
+• Registration by October 11 included (11.59 pm Italian time) using the
+module on Virtuale and specifying the name of your team and the email of
+all the members
+• It will be possible to withdraw from the competition in any moment (by
+email!)
+NAO Planning – deliver
+NAO Planning –
+deliver
+• What:
+- The folder containing the files of the entire project
+- A readme.txt file to specify
+- names and emails of the team participants
+- any necessary libraries that must be present
+- other useful information to test your project on simulated 
+NAO
+- a link to the repository containing the folder with the files of 
+the entire project
+• How:
+– Deliver ON VIRTUALE a .txt file containing link to repositories 
+(Github, Dropbox, Drive etc.) and the required information
+NAO Planning – Demo
+NAO Planning –
+Demo
+
+NAO Planning – final info…
+NAO Planning –
+final info…
+- Some rules can be changed in every moment, with a notification on the
+course website and by email.
+AI and creativity research:
+how can we train a neural network to try to recognize the artistic beauty 
+of a choreography?
+- At the end of the course, all the choreographies and the related scores
+received during the day of presentations and voting will create a dataset
+for a neural network for artistic evaluation of robotic choreographies.
+NAO Planning – final info…
+NAO Planning –
+final info…
+- Participation is not mandatory
+- You can participate in only one of the
+two competitions
+- Bonus of 2 points on the final grade for
+those taking part in one of the two
+competitions

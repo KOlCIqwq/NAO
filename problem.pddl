@@ -2,14 +2,16 @@
   (:domain nao_choreography)
   (:objects
     Standing Sitting Crouch - posture
+    pos_center pos_north pos_south pos_west pos_east - loc
     phase0 phase1 phase2 phase3 phase4 phase5 phase6 - phase
     p1_standinit p2_armsopening p3_crouch p4_sit p5_sitrelax p6_stand - move
-    m_disco m_voneyes m_wipeforehead m_rightarm m_newdance - move
+    m_fingersnap m_forward m_backward m_doublemovement m_astleysway m_hello - move
   )
 
   (:init
     (current_phase phase0)
     (at_posture Standing)
+    (at_loc pos_center)
 
     (next_phase phase0 phase1)
     (next_phase phase1 phase2)
@@ -43,42 +45,52 @@
     (valid_pre p6_stand Sitting)
     (valid_post p6_stand Standing)
 
-    ;; Intermediate moves
-    (requires_phase m_disco phase1)
-    (valid_pre m_disco Standing)
-    (valid_post m_disco Standing)
+    ;; Intermediate moves distributed by phase
+    (allowed_in_phase m_fingersnap phase1)
+    (valid_pre m_fingersnap Standing)
+    (valid_post m_fingersnap Standing)
 
-    (requires_phase m_voneyes phase1)
-    (valid_pre m_voneyes Standing)
-    (valid_post m_voneyes Standing)
+    (allowed_in_phase m_forward phase2)
+    (valid_pre m_forward Standing)
+    (valid_post m_forward Standing)
+    (loc_transition m_forward pos_center pos_north)
+    (loc_transition m_forward pos_south pos_center)
 
-    (requires_phase m_wipeforehead phase1)
-    (valid_pre m_wipeforehead Standing)
-    (valid_post m_wipeforehead Standing)
+    (allowed_in_phase m_backward phase2)
+    (valid_pre m_backward Standing)
+    (valid_post m_backward Standing)
+    (loc_transition m_backward pos_north pos_center)
+    (loc_transition m_backward pos_center pos_south)
 
-    (requires_phase m_rightarm phase1)
-    (valid_pre m_rightarm Standing)
-    (valid_post m_rightarm Standing)
+    (allowed_in_phase m_doublemovement phase2)
+    (valid_pre m_doublemovement Standing)
+    (valid_post m_doublemovement Standing)
 
-    (requires_phase m_newdance phase1)
-    (valid_pre m_newdance Standing)
-    (valid_post m_newdance Standing)
+    (allowed_in_phase m_astleysway phase6)
+    (valid_pre m_astleysway Standing)
+    (valid_post m_astleysway Standing)
+
+    (allowed_in_phase m_hello phase6)
+    (valid_pre m_hello Standing)
+    (valid_post m_hello Standing)
 
   )
 
   (:goal (and
     (current_phase phase6)
     (at_posture Standing)
+    (at_loc pos_center)
     (mandatory_done phase0)
     (mandatory_done phase1)
     (mandatory_done phase2)
     (mandatory_done phase3)
     (mandatory_done phase4)
     (mandatory_done phase5)
-    (move_done m_disco)
-    (move_done m_voneyes)
-    (move_done m_wipeforehead)
-    (move_done m_rightarm)
-    (move_done m_newdance)
+    (move_done m_fingersnap)
+    (move_done m_forward)
+    (move_done m_backward)
+    (move_done m_doublemovement)
+    (move_done m_astleysway)
+    (move_done m_hello)
   ))
 )
