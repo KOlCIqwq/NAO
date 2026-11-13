@@ -5,7 +5,7 @@
     pos_center pos_north pos_south pos_west pos_east - loc
     phase0 phase1 phase2 phase3 phase4 phase5 phase6 - phase
     p1_standinit p2_armsopening p3_crouch p4_sit p5_sitrelax p6_stand - move
-    m_fingersnap m_forward m_backward m_doublemovement m_astleysway m_hello - move
+    m_astleysway m_hello m_fingersnap m_thriller m_thrillersnap m_newdance m_diagleft m_diagright m_sithandkiss m_highclap m_disco - move
   )
 
   (:init
@@ -45,34 +45,43 @@
     (valid_pre p6_stand Sitting)
     (valid_post p6_stand Standing)
 
-    ;; Intermediate moves distributed by phase
-    (allowed_in_phase m_fingersnap phase1)
-    (valid_pre m_fingersnap Standing)
-    (valid_post m_fingersnap Standing)
-
-    (allowed_in_phase m_forward phase2)
-    (valid_pre m_forward Standing)
-    (valid_post m_forward Standing)
-    (loc_transition m_forward pos_center pos_north)
-    (loc_transition m_forward pos_south pos_center)
-
-    (allowed_in_phase m_backward phase2)
-    (valid_pre m_backward Standing)
-    (valid_post m_backward Standing)
-    (loc_transition m_backward pos_north pos_center)
-    (loc_transition m_backward pos_center pos_south)
-
-    (allowed_in_phase m_doublemovement phase2)
-    (valid_pre m_doublemovement Standing)
-    (valid_post m_doublemovement Standing)
-
-    (allowed_in_phase m_astleysway phase6)
+    ;; Intermediate moves preconditions and displacement effects
     (valid_pre m_astleysway Standing)
     (valid_post m_astleysway Standing)
 
-    (allowed_in_phase m_hello phase6)
     (valid_pre m_hello Standing)
     (valid_post m_hello Standing)
+
+    (valid_pre m_fingersnap Standing)
+    (valid_post m_fingersnap Standing)
+
+    (valid_pre m_thriller Standing)
+    (valid_post m_thriller Standing)
+
+    (valid_pre m_thrillersnap Standing)
+    (valid_post m_thrillersnap Standing)
+
+    (valid_pre m_newdance Standing)
+    (valid_post m_newdance Standing)
+
+    (valid_pre m_diagleft Standing)
+    (valid_post m_diagleft Standing)
+    (loc_transition m_diagleft pos_center pos_west)
+    (loc_transition m_diagleft pos_east pos_center)
+
+    (valid_pre m_diagright Standing)
+    (valid_post m_diagright Standing)
+    (loc_transition m_diagright pos_west pos_center)
+    (loc_transition m_diagright pos_center pos_east)
+
+    (valid_pre m_sithandkiss Sitting)
+    (valid_post m_sithandkiss Sitting)
+
+    (valid_pre m_highclap Standing)
+    (valid_post m_highclap Standing)
+
+    (valid_pre m_disco Standing)
+    (valid_post m_disco Standing)
 
   )
 
@@ -86,11 +95,16 @@
     (mandatory_done phase3)
     (mandatory_done phase4)
     (mandatory_done phase5)
-    (move_done m_fingersnap)
-    (move_done m_forward)
-    (move_done m_backward)
-    (move_done m_doublemovement)
     (move_done m_astleysway)
     (move_done m_hello)
+    (move_done m_fingersnap)
+    (move_done m_thriller)
+    (move_done m_thrillersnap)
+    (move_done m_newdance)
+    (move_done m_diagleft)
+    (move_done m_diagright)
+    (move_done m_sithandkiss)
+    (move_done m_highclap)
+    (move_done m_disco)
   ))
 )

@@ -14,7 +14,6 @@
     (valid_pre ?m - move ?p - posture)
     (valid_post ?m - move ?p - posture)
     (is_mandatory ?m - move ?ph - phase)
-    (allowed_in_phase ?m - move ?ph - phase)
     (loc_transition ?m - move ?from_loc - loc ?to_loc - loc)
   )
 
@@ -41,10 +40,8 @@
 
   ;; Execute stationary intermediate move in its designated musical phase
   (:action execute_intermediate
-    :parameters (?m - move ?from_pos - posture ?to_pos - posture ?ph - phase)
+    :parameters (?m - move ?from_pos - posture ?to_pos - posture)
     :precondition (and
-      (current_phase ?ph)
-      (allowed_in_phase ?m ?ph)
       (at_posture ?from_pos)
       (valid_pre ?m ?from_pos)
       (valid_post ?m ?to_pos)
@@ -58,10 +55,8 @@
 
   ;; Execute displacement intermediate move in its designated musical phase
   (:action execute_displacement
-    :parameters (?m - move ?from_pos - posture ?to_pos - posture ?from_l - loc ?to_l - loc ?ph - phase)
+    :parameters (?m - move ?from_pos - posture ?to_pos - posture ?from_l - loc ?to_l - loc)
     :precondition (and
-      (current_phase ?ph)
-      (allowed_in_phase ?m ?ph)
       (at_posture ?from_pos)
       (valid_pre ?m ?from_pos)
       (valid_post ?m ?to_pos)

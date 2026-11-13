@@ -31,26 +31,26 @@ def main(robotIP="127.0.0.1", port=9559):
     # Center starting pose (forearms bent in front of chest)
     pose_center = [
         0.0 * TO_RAD,
-        75.0 * TO_RAD,  10.0 * TO_RAD, -40.0 * TO_RAD, -60.0 * TO_RAD,  0.0 * TO_RAD,
-        75.0 * TO_RAD, -10.0 * TO_RAD,  40.0 * TO_RAD,  60.0 * TO_RAD,  0.0 * TO_RAD
+        70.0 * TO_RAD,  20.0 * TO_RAD, -55.0 * TO_RAD, -65.0 * TO_RAD,  0.0 * TO_RAD,
+        70.0 * TO_RAD, -20.0 * TO_RAD,  55.0 * TO_RAD,  65.0 * TO_RAD,  0.0 * TO_RAD
     ]
 
     # Sway Left: both arms angle to the robot's left, head turns slightly left
     pose_sway_left = [
-        12.0 * TO_RAD,
-        72.0 * TO_RAD,  28.0 * TO_RAD, -55.0 * TO_RAD, -65.0 * TO_RAD, -20.0 * TO_RAD,
-        78.0 * TO_RAD,  -4.0 * TO_RAD,  15.0 * TO_RAD,  75.0 * TO_RAD,  20.0 * TO_RAD
+        22.0 * TO_RAD,
+        62.0 * TO_RAD,  38.0 * TO_RAD, -70.0 * TO_RAD, -85.0 * TO_RAD, -35.0 * TO_RAD,
+        82.0 * TO_RAD,  -5.0 * TO_RAD,  25.0 * TO_RAD,  85.0 * TO_RAD,  35.0 * TO_RAD
     ]
 
     # Sway Right: both arms angle to the robot's right, head turns slightly right
     pose_sway_right = [
-        -12.0 * TO_RAD,
-        78.0 * TO_RAD,   4.0 * TO_RAD, -15.0 * TO_RAD, -75.0 * TO_RAD, -20.0 * TO_RAD,
-        72.0 * TO_RAD, -28.0 * TO_RAD,  55.0 * TO_RAD,  65.0 * TO_RAD,  20.0 * TO_RAD
+        -22.0 * TO_RAD,
+        82.0 * TO_RAD,   5.0 * TO_RAD, -25.0 * TO_RAD, -85.0 * TO_RAD, -35.0 * TO_RAD,
+        62.0 * TO_RAD, -38.0 * TO_RAD,  70.0 * TO_RAD,  85.0 * TO_RAD,  35.0 * TO_RAD
     ]
 
     # Sequence of keyframe times matching 113.3 BPM (beat = ~0.53s, 2 beats = 1.06s)
-    times = [0.8, 1.86, 2.92, 3.98, 5.04, 6.0]
+    times = [0.8, 1.86, 2.92, 3.98, 5.04, 6.1]
 
     # Build angle lists transposed per joint
     trajectory = [pose_center, pose_sway_left, pose_sway_right, pose_sway_left, pose_sway_right, pose_center]

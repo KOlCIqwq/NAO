@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAO Robot Choreography 3D Visualizer</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --border: #334155;
+      --primary: #38bdf8;
+      --accent: #f43f5e;
+      --success: #22c55e;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      padding: 12px 24px;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .badge.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    main {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+    #viewport-container {
+      flex: 1;
+      position: relative;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    }
+    canvas#stage {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    #sidebar {
+      width: 360px;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+    }
+    .sidebar-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .move-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .move-card {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .move-card:hover {
+      border-color: var(--primary);
+      transform: translateX(2px);
+    }
+    .move-card.active {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.12);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+    .move-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .move-type {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .type-mandatory {
+      background: rgba(244, 63, 94, 0.2);
+      color: var(--accent);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+    .type-intermediate {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+    .move-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    footer {
+      background: #0b1120;
+      border-top: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .timeline-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    button.btn-ctrl {
+      background: var(--primary);
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    button.btn-ctrl:hover { opacity: 0.9; }
+    .scrubber-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    input[type=range] {
+      flex: 1;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .time-display {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      min-width: 90px;
+    }
+    #audio-player {
+      display: none;
+    }
+    .overlay-info {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+    }
+    .overlay-info span { color: var(--primary); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NAO Choreography 3D Visualizer</h1>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span class="badge active">Music: Rick Roll (120s Cut)</span>
+      <span class="badge">Tempo: 113.3 BPM</span>
+      <span class="badge">Port: 9559 Live Sync</span>
+    </div>
+  </header>
+
+  <main>
+    <div id="viewport-container">
+      <canvas id="stage"></canvas>
+      <div class="overlay-info">
+        <div>Current Move: <span id="overlay-move">14-StandInit.py</span></div>
+        <div>Pose Category: <span id="overlay-posture">Standing</span></div>
+        <div>Rhythm Beat: <span id="overlay-beat">1 / 4</span></div>
+      </div>
+    </div>
+
+    <aside id="sidebar">
+      <div class="sidebar-header">Planned Choreography Sequence (12 Moves)</div>
+      <div class="move-list" id="move-list"></div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="timeline-controls">
+      <button class="btn-ctrl" id="btn-play">Play Dance</button>
+      <div class="scrubber-wrapper">
+        <span class="time-display" id="time-curr">00:00.0</span>
+        <input type="range" id="scrubber" min="0" max="120" step="0.1" value="0">
+        <span class="time-display" id="time-total">02:00.0</span>
+      </div>
+      <audio id="audio-player" src="rick_120s.mp3" preload="auto"></audio>
+    </div>
+  </footer>
+
+  <script>
+    const planData = {
+      song: "rick_120s.mp3",
+      duration: 120.0,
+      moves: [
+        { step: 1, type: "MANDATORY", file: "14-StandInit.py", dur: 2.0, posture: "StandInit" },
+        { step: 2, type: "INTERMEDIATE", file: "1-Rotation_handgun_object.py", dur: 5.0, posture: "Standing" },
+        { step: 3, type: "INTERMEDIATE", file: "Hello.py", dur: 7.5, posture: "Standing" },
+        { step: 4, type: "INTERMEDIATE", file: "finger_snap.py", dur: 7.4, posture: "Standing" },
+        { step: 5, type: "INTERMEDIATE", file: "new_dance.py", dur: 3.2, posture: "Standing" },
+        { step: 6, type: "MANDATORY", file: "4-Arms_opening.py", dur: 6.9, posture: "Standing" },
+        { step: 7, type: "INTERMEDIATE", file: "high_clap.py", dur: 5.6, posture: "Standing" },
+        { step: 8, type: "INTERMEDIATE", file: "9-Diagonal_left.py", dur: 3.5, posture: "Standing" },
+        { step: 9, type: "INTERMEDIATE", file: "10-Diagonal_right.py", dur: 3.6, posture: "Standing" },
+        { step: 10, type: "MANDATORY", file: "6-Crouch.py", dur: 2.4, posture: "Crouch" },
+        { step: 11, type: "MANDATORY", file: "16-Sit.py", dur: 3.5, posture: "Sitting" },
+        { step: 12, type: "INTERMEDIATE", file: "sitting_mood.py", dur: 4.2, posture: "Sitting" },
+        { step: 13, type: "MANDATORY", file: "17-SitRelax.py", dur: 3.0, posture: "Sitting" },
+        { step: 14, type: "MANDATORY", file: "11-Stand.py", dur: 3.5, posture: "Standing" },
+        { step: 15, type: "INTERMEDIATE", file: "15-StandZero.py", dur: 3.0, posture: "Standing" },
+        { step: 16, type: "INTERMEDIATE", file: "guitar.py", dur: 6.6, posture: "Standing" }
+      ]
+    };
+
+    // Calculate start times
+    let cum = 0;
+    planData.moves.forEach(m => {
+      m.start = cum;
+      cum += m.dur;
+      m.end = cum;
+    });
+
+    // Populate sidebar
+    const listEl = document.getElementById('move-list');
+    planData.moves.forEach((m, idx) => {
+      const card = document.createElement('div');
+      card.className = 'move-card' + (idx === 0 ? ' active' : '');
+      card.id = 'move-card-' + idx;
+      card.innerHTML = `
+        <div class="move-card-top">
+          <span>${idx + 1}. ${m.file}</span>
+          <span class="move-type ${m.type === 'MANDATORY' ? 'type-mandatory' : 'type-intermediate'}">${m.type}</span>
+        </div>
+        <div class="move-meta">
+          <span>T: ${m.start.toFixed(1)}s - ${m.end.toFixed(1)}s</span>
+          <span>Dur: ${m.dur.toFixed(1)}s</span>
+        </div>
+      `;
+      card.onclick = () => {
+        setTime(m.start);
+      };
+      listEl.appendChild(card);
+    });
+
+    // 3D Canvas Kinematic Renderer
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+    let currentTime = 0;
+    let isPlaying = false;
+    let animId = null;
+
+    function resize() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const audio = document.getElementById('audio-player');
+    const playBtn = document.getElementById('btn-play');
+    const scrubber = document.getElementById('scrubber');
+    const timeCurr = document.getElementById('time-curr');
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      const ms = Math.floor((sec % 1) * 10);
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s + '.' + ms;
+    }
+
+    function setTime(t) {
+      currentTime = Math.max(0, Math.min(120, t));
+      scrubber.value = currentTime;
+      timeCurr.textContent = formatTime(currentTime);
+      if (Math.abs(audio.currentTime - currentTime) > 0.3) {
+        audio.currentTime = currentTime;
+      }
+      updateActiveCard();
+    }
+
+    function updateActiveCard() {
+      let activeIdx = 0;
+      for (let i = 0; i < planData.moves.length; i++) {
+        if (currentTime >= planData.moves[i].start && currentTime <= planData.moves[i].end) {
+          activeIdx = i;
+          break;
+        }
+      }
+      planData.moves.forEach((m, i) => {
+        const el = document.getElementById('move-card-' + i);
+        if (el) el.classList.toggle('active', i === activeIdx);
+      });
+      const activeMove = planData.moves[activeIdx] || planData.moves[0];
+      document.getElementById('overlay-move').textContent = activeMove.file;
+      document.getElementById('overlay-posture').textContent = activeMove.posture;
+      const beat = Math.floor((currentTime / 0.53) % 4) + 1;
+      document.getElementById('overlay-beat').textContent = beat + ' / 4';
+    }
+
+    playBtn.onclick = () => {
+      isPlaying = !isPlaying;
+      playBtn.textContent = isPlaying ? 'Pause' : 'Play Dance';
+      if (isPlaying) {
+        audio.play().catch(() => {});
+        lastFrame = performance.now();
+        requestAnimationFrame(renderLoop);
+      } else {
+        audio.pause();
+      }
+    };
+
+    scrubber.oninput = (e) => {
+      setTime(parseFloat(e.target.value));
+    };
+
+    let lastFrame = performance.now();
+    function renderLoop(now) {
+      const dt = (now - lastFrame) / 1000;
+      lastFrame = now;
+
+      if (isPlaying) {
+        currentTime += dt;
+        if (currentTime > 120) {
+          currentTime = 120;
+          isPlaying = false;
+          playBtn.textContent = 'Play Dance';
+        }
+        scrubber.value = currentTime;
+        timeCurr.textContent = formatTime(currentTime);
+        updateActiveCard();
+      }
+
+      drawScene(currentTime);
+
+      if (isPlaying) {
+        requestAnimationFrame(renderLoop);
+      }
+    }
+
+    // Kinematic model rendering
+    function drawScene(t) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2 + 50;
+
+      // Draw Floor grid (isometric-like)
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let r = -200; r <= 200; r += 40) {
+        ctx.beginPath();
+        ctx.moveTo(cx - 300, cy + 120 + r * 0.4);
+        ctx.lineTo(cx + 300, cy + 120 + r * 0.4);
+        ctx.stroke();
+      }
+
+      // Stage circle
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 120, 160, 45, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Kinematic rhythmic wave parameters based on 113 BPM
+      const bpm = 113.3;
+      const beatPhase = (t * (bpm / 60) * Math.PI * 2);
+      const groove = Math.sin(beatPhase);
+      const grooveCos = Math.cos(beatPhase);
+
+      // Current posture adjustments
+      let crouchFactor = 0;
+      let isSit = false;
+      if (t >= 30.8 && t < 33.2) {
+        crouchFactor = (t - 30.8) / 2.4;
+      } else if (t >= 33.2 && t < 66.2) {
+        isSit = true;
+      } else if (t >= 66.2 && t < 68.0) {
+        crouchFactor = 1.0 - (t - 66.2) / 1.8;
+      }
+
+      // Torso position
+      const torsoY = isSit ? cy + 60 : cy - 20 + (crouchFactor * 50) + (groove * 4);
+      const torsoX = cx + (grooveCos * 6);
+
+      // Head
+      const headY = torsoY - 80;
+      const headX = torsoX + (groove * 3);
+
+      // Limbs: Arms (Rick Roll sway / arms opening / groove)
+      let lArmAngle = Math.PI / 4 + groove * 0.4;
+      let rArmAngle = -Math.PI / 4 - groove * 0.4;
+      if (t >= 7.7 && t < 14.6) { // 4-Arms_opening
+        lArmAngle = Math.PI / 2 + Math.sin(t * 3) * 0.3;
+        rArmAngle = -Math.PI / 2 - Math.sin(t * 3) * 0.3;
+      } else if (t >= 72.2 && t < 80.2) { // Astley arm sway
+        lArmAngle = Math.PI / 3 + groove * 0.8;
+        rArmAngle = -Math.PI / 6 + groove * 0.8;
+      }
+
+      // Draw Skeleton
+      ctx.lineWidth = 8;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#f8fafc';
+
+      // Spine / Torso
+      ctx.beginPath();
+      ctx.moveTo(torsoX, torsoY - 60);
+      ctx.lineTo(torsoX, torsoY + 20);
+      ctx.stroke();
+
+      // Head sphere
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(headX, headY, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Left Arm
+      const lElbowX = torsoX - 45 - Math.cos(lArmAngle) * 35;
+      const lElbowY = torsoY - 45 + Math.sin(lArmAngle) * 35;
+      const lHandX = lElbowX - Math.cos(lArmAngle + 0.3) * 35;
+      const lHandY = lElbowY + Math.sin(lArmAngle + 0.3) * 35;
+      ctx.beginPath();
+      ctx.moveTo(torsoX - 20, torsoY - 50);
+      ctx.lineTo(lElbowX, lElbowY);
+      ctx.lineTo(lHandX, lHandY);
+      ctx.stroke();
+
+      // Right Arm
+      const rElbowX = torsoX + 45 - Math.cos(rArmAngle) * 35;
+      const rElbowY = torsoY - 45 - Math.sin(rArmAngle) * 35;
+      const rHandX = rElbowX - Math.cos(rArmAngle - 0.3) * 35;
+      const rHandY = rElbowY - Math.sin(rArmAngle - 0.3) * 35;
+      ctx.beginPath();
+      ctx.moveTo(torsoX + 20, torsoY - 50);
+      ctx.lineTo(rElbowX, rElbowY);
+      ctx.lineTo(rHandX, rHandY);
+      ctx.stroke();
+
+      // Legs
+      if (!isSit) {
+        const lKneeX = torsoX - 25 - (crouchFactor * 15);
+        const lKneeY = torsoY + 60 + (crouchFactor * 25);
+        const lFootX = torsoX - 25;
+        const lFootY = cy + 120;
+
+        const rKneeX = torsoX + 25 + (crouchFactor * 15);
+        const rKneeY = torsoY + 60 + (crouchFactor * 25);
+        const rFootX = torsoX + 25;
+        const rFootY = cy + 120;
+
+        ctx.beginPath();
+        ctx.moveTo(torsoX - 15, torsoY + 20);
+        ctx.lineTo(lKneeX, lKneeY);
+        ctx.lineTo(lFootX, lFootY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(torsoX + 15, torsoY + 20);
+        ctx.lineTo(rKneeX, rKneeY);
+        ctx.lineTo(rFootX, rFootY);
+        ctx.stroke();
+      } else {
+        // Sitting posture legs bent forward
+        ctx.beginPath();
+        ctx.moveTo(torsoX - 15, torsoY + 20);
+        ctx.lineTo(torsoX - 35, torsoY + 50);
+        ctx.lineTo(torsoX - 55, torsoY + 55);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(torsoX + 15, torsoY + 20);
+        ctx.lineTo(torsoX + 35, torsoY + 50);
+        ctx.lineTo(torsoX + 55, torsoY + 55);
+        ctx.stroke();
+      }
+    }
+
+    drawScene(0);
+  </script>
+</body>
+</html>
