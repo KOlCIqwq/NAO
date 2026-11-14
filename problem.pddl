@@ -5,7 +5,7 @@
     pos_center pos_north pos_south pos_west pos_east - loc
     phase0 phase1 phase2 phase3 phase4 phase5 phase6 - phase
     p1_standinit p2_armsopening p3_crouch p4_sit p5_sitrelax p6_stand - move
-    m_astleysway m_hello m_fingersnap m_thriller m_thrillersnap m_newdance m_diagleft m_diagright m_sithandkiss m_highclap m_disco - move
+    m_workout m_comp_diagleft_snap m_saxophone m_comp_diagright_sway m_sithandkiss m_astleysway m_sprinkler m_disco m_headbang - move
   )
 
   (:init
@@ -46,42 +46,36 @@
     (valid_post p6_stand Standing)
 
     ;; Intermediate moves preconditions and displacement effects
-    (valid_pre m_astleysway Standing)
-    (valid_post m_astleysway Standing)
+    (valid_pre m_workout Standing)
+    (valid_post m_workout Standing)
 
-    (valid_pre m_hello Standing)
-    (valid_post m_hello Standing)
+    (valid_pre m_comp_diagleft_snap Standing)
+    (valid_post m_comp_diagleft_snap Standing)
+    (loc_transition m_comp_diagleft_snap pos_center pos_west)
+    (loc_transition m_comp_diagleft_snap pos_east pos_center)
 
-    (valid_pre m_fingersnap Standing)
-    (valid_post m_fingersnap Standing)
+    (valid_pre m_saxophone Standing)
+    (valid_post m_saxophone Standing)
 
-    (valid_pre m_thriller Standing)
-    (valid_post m_thriller Standing)
-
-    (valid_pre m_thrillersnap Standing)
-    (valid_post m_thrillersnap Standing)
-
-    (valid_pre m_newdance Standing)
-    (valid_post m_newdance Standing)
-
-    (valid_pre m_diagleft Standing)
-    (valid_post m_diagleft Standing)
-    (loc_transition m_diagleft pos_center pos_west)
-    (loc_transition m_diagleft pos_east pos_center)
-
-    (valid_pre m_diagright Standing)
-    (valid_post m_diagright Standing)
-    (loc_transition m_diagright pos_west pos_center)
-    (loc_transition m_diagright pos_center pos_east)
+    (valid_pre m_comp_diagright_sway Standing)
+    (valid_post m_comp_diagright_sway Standing)
+    (loc_transition m_comp_diagright_sway pos_west pos_center)
+    (loc_transition m_comp_diagright_sway pos_center pos_east)
 
     (valid_pre m_sithandkiss Sitting)
     (valid_post m_sithandkiss Sitting)
 
-    (valid_pre m_highclap Standing)
-    (valid_post m_highclap Standing)
+    (valid_pre m_astleysway Standing)
+    (valid_post m_astleysway Standing)
+
+    (valid_pre m_sprinkler Standing)
+    (valid_post m_sprinkler Standing)
 
     (valid_pre m_disco Standing)
     (valid_post m_disco Standing)
+
+    (valid_pre m_headbang Standing)
+    (valid_post m_headbang Standing)
 
   )
 
@@ -95,16 +89,5 @@
     (mandatory_done phase3)
     (mandatory_done phase4)
     (mandatory_done phase5)
-    (move_done m_astleysway)
-    (move_done m_hello)
-    (move_done m_fingersnap)
-    (move_done m_thriller)
-    (move_done m_thrillersnap)
-    (move_done m_newdance)
-    (move_done m_diagleft)
-    (move_done m_diagright)
-    (move_done m_sithandkiss)
-    (move_done m_highclap)
-    (move_done m_disco)
   ))
 )

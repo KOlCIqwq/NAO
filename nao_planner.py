@@ -62,9 +62,17 @@ MOVE_MAP = {
     "m_superman": "new_superman.py",
     "m_thriller": "ThrillerClap.py",
     "m_thrillersnap": "ThrillerSnapSnap.py",
-    "m_thrillersideways": "ThrillerArmSideways.py",
-    "m_dancemove": "DanceMove.py",
-    "m_astleysway": "astley_arm_sway.py",
+   "m_thrillersideways": "ThrillerArmSideways.py",
+   "m_dancemove": "DanceMove.py",
+   "m_astleysway": "astley_arm_sway.py",
+   "m_comp_diagleft_snap": "composite_diagleft_snap.py",
+   "m_comp_diagright_sway": "composite_diagright_sway.py",
+    "m_comp_forward_groove": "composite_forward_groove.py",
+    "m_comp_backward_groove": "composite_backward_groove.py",
+    "m_sprinkler": "sprinkler.py",
+    "m_workout": "workout.py",
+    "m_headbang": "Headbang.py",
+    "m_saxophone": "Saxophone.py",
 }
 
 FILE_TO_SYMBOL = {v: k for k, v in MOVE_MAP.items()}
@@ -72,6 +80,32 @@ FILE_TO_SYMBOL = {v: k for k, v in MOVE_MAP.items()}
 # Comprehensive Candidate Move Library with Survey Attributes and Physical Preconditions
 # No hardcoded phases: any standing move is eligible while standing, any sitting move while sitting!
 CANDIDATE_MOVES = {
+    # Composite Layered Moves: Locomotion + Upper Dance Blended (Slide 11 & 15)
+    "composite_diagleft_snap.py": {
+        "dur": 4.24, "energy": 3.8, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 1, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "composite_diagright_sway.py": {
+        "dur": 4.24, "energy": 4.5, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": -1, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "composite_forward_groove.py": {
+        "dur": 4.24, "energy": 4.2, "pub": 4.8, "hum": 4.8, "dx": 1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "composite_backward_groove.py": {
+        "dur": 4.24, "energy": 4.0, "pub": 4.8, "hum": 4.8, "dx": -1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    # Classic & High-Energy Extracted Choregraphe Dances
+    "sprinkler.py": {
+        "dur": 8.76, "energy": 4.8, "pub": 5.3, "hum": 5.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "Saxophone.py": {
+        "dur": 9.88, "energy": 4.5, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "Headbang.py": {
+        "dur": 12.6, "energy": 5.0, "pub": 5.0, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "workout.py": {
+        "dur": 16.0, "energy": 4.2, "pub": 4.5, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
     # Locomotion / Space Usage
     "7-Move_forward.py": {
         "dur": 4.2, "energy": 3.0, "pub": 3.0, "hum": 3.5, "dx": 1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
@@ -112,12 +146,12 @@ CANDIDATE_MOVES = {
         "dur": 5.0, "energy": 2.0, "pub": 2.5, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
    },
    "WipeForehead.py": {
-        "dur": 7.8, "energy": 2.5, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "Hello.py": {
-        "dur": 7.5, "energy": 2.0, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "dab.py": {
+        "dur": 7.8, "energy": 2.5, "pub": 3.0, "hum": 3.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
+   "Hello.py": {
+        "dur": 7.5, "energy": 2.0, "pub": 2.5, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
+   "dab.py": {
         "dur": 4.6, "energy": 4.5, "pub": 4.2, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
     "new_dance.py": {
@@ -141,21 +175,21 @@ CANDIDATE_MOVES = {
    "astley_arm_sway.py": {
         "dur": 6.1, "energy": 4.8, "pub": 5.5, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
    },
-    "Disco.py": {
-        "dur": 5.0, "energy": 4.5, "pub": 4.5, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "DanceMove.py": {
-        "dur": 8.3, "energy": 4.5, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "ThrillerClap.py": {
-        "dur": 5.0, "energy": 4.5, "pub": 4.8, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "ThrillerSnapSnap.py": {
-        "dur": 5.0, "energy": 4.2, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "new_hiphop.py": {
-        "dur": 5.3, "energy": 4.5, "pub": 4.2, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
+   "Disco.py": {
+        "dur": 5.0, "energy": 4.8, "pub": 5.2, "hum": 5.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
+   "DanceMove.py": {
+       "dur": 8.3, "energy": 4.5, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
+   "ThrillerClap.py": {
+       "dur": 5.0, "energy": 4.5, "pub": 4.8, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
+   "ThrillerSnapSnap.py": {
+       "dur": 5.0, "energy": 4.2, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
+   "new_hiphop.py": {
+        "dur": 5.3, "energy": 4.8, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+   },
 
     # Sitting Choreography
     "sitting_mood.py": {
@@ -176,7 +210,7 @@ MANDATORY_MOVES = [
     ("6-Crouch.py", "p3_crouch", 2, "Standing", "Crouch", 2.4),
     ("16-Sit.py", "p4_sit", 3, "Crouch", "Sitting", 3.5),
     ("17-SitRelax.py", "p5_sitrelax", 4, "Sitting", "Sitting", 3.0),
-    ("11-Stand.py", "p6_stand", 5, "Sitting", "Standing", 3.5),
+    ("11-Stand.py", "p6_stand", 5, "Sitting", "Standing", 6.0),
 ]
 
 def get_target_music_energy(t_sec):
@@ -194,18 +228,17 @@ def get_target_music_energy(t_sec):
 
 class StripsPlanner(object):
     """Classical forward state-space A* STRIPS planner with multi-objective survey heuristic."""
-    def __init__(self, max_duration=92.0, bpm=113.3):
+    def __init__(self, max_duration=112.0, bpm=113.3):
         self.max_duration = max_duration
         self.bpm = bpm
         self.bar_dur = (60.0 / bpm) * 4.0 # ~2.12s per bar
 
     def solve(self):
         """Finds the optimal sequence of mandatory and intermediate moves via A* forward search."""
-        # Per competition Slide 15: P1 (14-StandInit) executes first at t = 0, starting Phase 1
         p1_file, p1_sym, _, _, _, p1_dur = MANDATORY_MOVES[0]
         start_hist = ((p1_file, "MANDATORY", p1_sym, p1_dur, 0),)
-        # state: (time, phase_idx, posture, x, y, used_set, hist, ph_count, visited_non_center)
-        start_state = (p1_dur, 1, "Standing", 0, 0, frozenset(), start_hist, 0, False)
+        # state: (time, phase_idx, posture, x, y, used_tuple, hist, ph_count, visited_non_center)
+        start_state = (p1_dur, 1, "Standing", 0, 0, (), start_hist, 0, False)
         pq = []
         heapq.heappush(pq, (p1_dur, p1_dur, start_state))
         visited = {}
@@ -216,39 +249,40 @@ class StripsPlanner(object):
             f, g, (t, ph, pos, x, y, used, hist, ph_cnt, visited_stage) = heapq.heappop(pq)
             nodes += 1
 
-            state_key = (ph, pos, x, y, used, visited_stage)
-            if state_key in visited and visited[state_key] <= g:
+            state_key = (ph, pos, x, y, visited_stage, round(t, 0))
+            if state_key in visited and visited[state_key] <= f:
                 continue
-            visited[state_key] = g
+            visited[state_key] = f
 
-           # Goal test: all 6 mandatory phases complete, returned to center (0,0), >= 5 intermediate moves,
-           # visited surrounding stage space, and performed chorus finale in Phase 6
-            if ph == 6 and ph_cnt >= 2 and x == 0 and y == 0 and len(used) >= 5 and visited_stage:
-               best_plan = (t, g, hist)
-               break
+            # Goal test: all 6 mandatory phases complete, returned to center (0,0), >= 5 intermediate moves,
+            # visited surrounding stage space, and performed chorus finale in Phase 6
+            if ph == 6 and ph_cnt >= 3 and t >= 98.0 and x == 0 and y == 0 and len(used) >= 8 and visited_stage:
+                best_plan = (t, g, hist)
+                break
 
             # Action A: Advance mandatory phase (P1..P6)
             if 0 < ph < 6:
                 m_file, m_sym, m_ph, pre_pos, post_pos, m_dur = MANDATORY_MOVES[ph]
                 if pos == pre_pos:
-                    # Interleaving requirement: require at least 1 intermediate in Phase 4 (Sitting)
-                    if ph == 4 and ph_cnt == 0:
-                        pass
-                    # Floor drop (6-Crouch) should happen at center stage (x=0, y=0)
+                    if ph == 1 and ph_cnt < 2:
+                        pass # Require at least 2 intro groove moves in Phase 1 before Arms_opening
+                    elif ph == 4 and ph_cnt == 0:
+                        pass # Require floor dance before SitRelax
                     elif m_file == "6-Crouch.py" and (x != 0 or y != 0):
-                        pass # must return to center before floor drop
+                        pass # Must return to center before floor drop
                     else:
                         new_t = t + m_dur
                         if new_t <= self.max_duration:
                             new_hist = hist + ((m_file, "MANDATORY", m_sym, m_dur, ph),)
                             new_g = g + m_dur
                             h_rem = (6 - (ph + 1)) * 3.0 + (abs(x) + abs(y)) * 4.0
-                            heapq.heappush(pq, (new_g + h_rem, new_g, (new_t, ph + 1, post_pos, x, y, used, new_hist, 0, visited_stage)))
+                            heapq.heappush(pq, (new_g + h_rem - (ph + 1) * 6.0, new_g, (new_t, ph + 1, post_pos, x, y, used, new_hist, 0, visited_stage)))
 
-            # Action B: Execute an intermediate move from the broad candidate pool
-            if ph_cnt < 4 and len(used) < 11 and t < (self.max_duration - 6.0):
+            # Action B: Execute an intermediate move from the candidate pool
+            if ph_cnt < 6 and len(used) < 18 and t < (self.max_duration - 4.0):
                 for m_file, info in CANDIDATE_MOVES.items():
-                    if m_file in used:
+                    max_plays = 2 if m_file in ["astley_arm_sway.py", "composite_diagleft_snap.py", "composite_diagright_sway.py"] else 1
+                    if used.count(m_file) >= max_plays:
                         continue
                     if info["pre"] == pos:
                         new_x = x + info["dx"]
@@ -270,17 +304,18 @@ class StripsPlanner(object):
                             beat_err = abs((info["dur"] % self.bar_dur) - (self.bar_dur / 2.0))
                             space_bonus = 3.5 if info["disp"] else 0.0
 
-                            # Lower cost = better choreography
-                            cost_delta = info["dur"] - (pub * 3.0) - (hum * 3.0) - space_bonus + (e_err * 2.0) + (beat_err * 1.5)
+                            # Positive cost formulation for admissible A* search
+                            quality = (pub * 3.0) + (hum * 3.0) + space_bonus - (e_err * 2.0) - (beat_err * 1.5)
+                            cost_delta = max(0.5, 36.0 - quality)
                             new_g = g + cost_delta
-                            new_used = used | {m_file}
+                            new_used = used + (m_file,)
                             m_sym = FILE_TO_SYMBOL.get(m_file, "m_custom")
                             new_hist = hist + ((m_file, "INTERMEDIATE", m_sym, info["dur"], ph),)
                             new_visited_stage = visited_stage or (new_x != 0 or new_y != 0)
 
                             # Admissible heuristic estimating remaining cost
-                            h_rem = (6 - ph) * 4.0 + (abs(new_x) + abs(new_y)) * 5.0 + (0 if new_visited_stage else 4.0)
-                            heapq.heappush(pq, (new_g + h_rem, new_g, (new_t, ph, info["post"], new_x, new_y, new_used, new_hist, ph_cnt + 1, new_visited_stage)))
+                            h_rem = (6 - ph) * 5.0 + (abs(new_x) + abs(new_y)) * 6.0 + (0 if new_visited_stage else 4.0)
+                            heapq.heappush(pq, (new_g + h_rem - ph * 5.0, new_g, (new_t, ph, info["post"], new_x, new_y, new_used, new_hist, ph_cnt + 1, new_visited_stage)))
 
         return best_plan
 
@@ -343,16 +378,16 @@ def write_problem_pddl(plan_history, output_path="problem.pddl"):
             info = CANDIDATE_MOVES.get(m_file, {})
             lines.append("    (valid_pre %s %s)" % (sym, info.get("pre", "Standing")))
             lines.append("    (valid_post %s %s)" % (sym, info.get("post", "Standing")))
-            if m_file == "7-Move_forward.py":
+            if m_file in ["7-Move_forward.py", "composite_forward_groove.py"]:
                 lines.append("    (loc_transition %s pos_center pos_north)" % sym)
                 lines.append("    (loc_transition %s pos_south pos_center)" % sym)
-            elif m_file == "8-Move_backward.py":
+            elif m_file in ["8-Move_backward.py", "composite_backward_groove.py"]:
                 lines.append("    (loc_transition %s pos_north pos_center)" % sym)
                 lines.append("    (loc_transition %s pos_center pos_south)" % sym)
-            elif m_file == "9-Diagonal_left.py":
+            elif m_file in ["9-Diagonal_left.py", "composite_diagleft_snap.py"]:
                 lines.append("    (loc_transition %s pos_center pos_west)" % sym)
                 lines.append("    (loc_transition %s pos_east pos_center)" % sym)
-            elif m_file == "10-Diagonal_right.py":
+            elif m_file in ["10-Diagonal_right.py", "composite_diagright_sway.py"]:
                 lines.append("    (loc_transition %s pos_west pos_center)" % sym)
                 lines.append("    (loc_transition %s pos_center pos_east)" % sym)
             lines.append("")
@@ -370,13 +405,8 @@ def write_problem_pddl(plan_history, output_path="problem.pddl"):
         "    (mandatory_done phase3)",
         "    (mandatory_done phase4)",
         "    (mandatory_done phase5)",
-    ])
-    for sym in used_symbols:
-        lines.append("    (move_done %s)" % sym)
-    lines.extend([
         "  ))",
         ")",
-        ""
     ])
     with open(output_path, "w") as f:
         f.write("\n".join(lines))
@@ -398,7 +428,7 @@ def generate_full_choreography(song_path=None):
 
     print("-> Search space: 33 candidate moves across standing, locomotion, and sitting postures")
     print("-> Optimizing 7 Survey Criteria: Public Involvement, Human Characterization, Beat Alignment, Fluidity")
-    planner = StripsPlanner(max_duration=85.0, bpm=bpm)
+    planner = StripsPlanner(max_duration=112.0, bpm=bpm)
     result = planner.solve()
 
     if not result:

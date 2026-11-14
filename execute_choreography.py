@@ -23,7 +23,8 @@ try:
     _proxy_cache = {}
     _SIT_NAMES = ['HeadYaw', 'HeadPitch', 'LShoulderPitch', 'LShoulderRoll', 'LElbowYaw', 'LElbowRoll', 'LWristYaw', 'LHand', 'LHipYawPitch', 'LHipRoll', 'LHipPitch', 'LKneePitch', 'LAnklePitch', 'LAnkleRoll', 'RHipYawPitch', 'RHipRoll', 'RHipPitch', 'RKneePitch', 'RAnklePitch', 'RAnkleRoll', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand']
     _SIT_ANGLES = [-0.0307, -0.0399, 0.8399, 0.3002, -0.4654, -1.1948, -0.0016, 0.296, -0.6059, 0.267, -1.5294, 1.3959, 0.8437, -0.0122, -0.6059, -0.2561, -1.5325, 1.4021, 0.8238, 0.02, 0.8875, -0.3316, 0.5407, 1.255, -0.0077, 0.3348]
-    _SITRELAX_ANGLES = [-0.0246, 0.0184, 2.0854, 0.0945, -2.0508, -0.182, -0.95, 0.1384, -0.5215, 0.132, -1.1152, -0.0415, 0.922, 0.0, -0.5215, -0.2209, -1.06, -0.092, 0.922, 0.0, 2.0857, -0.1591, 2.0609, 0.0428, 0.95, 0.1396]
+    _SITRELAX_ANGLES = [-0.02, 0.0, 1.2, 0.15, -0.6, -0.5, 0.0, 0.3, -0.6059, 0.267, -1.50, 1.38, 0.84, -0.01, -0.6059, -0.2561, -1.50, 1.38, 0.84, 0.02, 1.2, -0.15, 0.6, 0.5, 0.0, 0.3]
+    _CROUCH_ANGLES = [0.0, 0.0, 1.4, 0.18, -1.35, -0.5, 0.0, 0.3, 0.0, 0.0, -0.85, 2.05, -1.15, 0.0, 0.0, 0.0, -0.85, 2.05, -1.15, 0.0, 1.4, -0.18, 1.35, 0.5, 0.0, 0.3]
     class _DummyTTS(object):
         def say(self, *args, **kwargs):
             pass
@@ -43,12 +44,12 @@ try:
                     self._motion.angleInterpolation(_SIT_NAMES, _SITRELAX_ANGLES, 2.5, True)
                     return True
                 elif postureName in ["Stand", "StandInit"]:
-                    # In simulated NAO, standing directly from SitRelax causes feet to slip outward.
-                    # Tucking knees and feet into Sit first gives stable ground support so NAO rises cleanly.
+                    # In simulated NAO, standing directly from SitRelax causes feet to slip outward and fall.
+                    # Tucking smoothly into Crouch first gives full center-of-gravity support so NAO rises cleanly in 2.5s.
                     try:
                         curr = self._real.getPosture()
-                        if curr in ["SitRelax", "Sitting", "Unknown"]:
-                            self._motion.angleInterpolation(_SIT_NAMES, _SIT_ANGLES, 1.8, True)
+                        if curr in ["SitRelax", "Sitting", "Sit", "Unknown"]:
+                            self._motion.angleInterpolation(_SIT_NAMES, _CROUCH_ANGLES, 1.6, True)
                     except Exception:
                         pass
                     return self._real.goToPosture("StandInit", 0.9)
@@ -164,7 +165,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
         print("--> Step {:02d}/{:02d}: Executing {}".format(idx, len(moves), mod_name))
 
         # Fluid posture transition: if moving from floor/crouch to a standing movement, stand up smoothly
-        is_floor_move = any(x in move_file for x in ["6-Crouch", "16-Sit", "17-SitRelax", "sitting_mood", "sitting_handkiss", "sitting_wavess"])
+        is_floor_move = any(x in move_file for x in ["6-Crouch", "16-Sit", "17-SitRelax", "11-Stand", "sitting_mood", "sitting_handkiss", "sitting_wavess"])
         if not is_floor_move and current_posture in ["Crouch", "Sitting"]:
             try:
                 if not dry_run:
@@ -187,7 +188,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
                     exec_names = []
                     exec_keys = []
                     exec_times = []
-                    is_standing_upper_dance = any(x in mod_name for x in ["finger_snap", "high_clap", "whip", "dab", "guitar", "proud", "Disco", "DanceMove", "ThrillerClap", "ThrillerSnapSnap", "new_hiphop"])
+                    is_standing_upper_dance = any(x in mod_name for x in ["finger_snap", "DanceMove"])
                     is_sitting_dance = ("sitting" in mod_name)
                     for n, k, t in zip(mod.names, mod.keys, mod.times):
                         if (is_standing_upper_dance or is_sitting_dance) and any(leg in n for leg in ["Hip", "Knee", "Ankle"]):
