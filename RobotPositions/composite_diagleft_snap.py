@@ -1,4 +1,4 @@
-''' Composite Layered Move: 9-Diagonal_left locomotion + finger_snap arm gestures '''
+''' Composite Layered Move: 9-Diagonal_left locomotion + beat-locked finger_snap arm gestures '''
 import sys
 from naoqi import ALProxy
 
@@ -13,47 +13,32 @@ def main(robotIP="127.0.0.1", port=9559):
     motion.setMoveArmsEnabled(False, False)
 
     # 1. Start non-blocking diagonal step left in background
-    # dx = 0.03m, dy = 0.02m (smooth subtle stage step)
     motion.post.moveTo(0.03, 0.02, 0.0)
 
-    # 2. Concurrently execute finger snap arm and head gestures
-    # Scaled to 4.24s (2 musical bars at 113.3 BPM)
+    # 2. Concurrently execute beat-locked snap & head nod (4.24s, 8 beats at 113.3 BPM)
     names = [
         "HeadPitch", "HeadYaw",
         "LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll", "LWristYaw", "LHand",
         "RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand"
     ]
-    times = [
-        [0.8, 2.1, 3.4, 4.2], # HeadPitch
-        [0.8, 2.1, 3.4, 4.2], # HeadYaw
-        [0.8, 2.1, 3.4, 4.2], # LShoulderPitch
-        [0.8, 2.1, 3.4, 4.2], # LShoulderRoll
-        [0.8, 2.1, 3.4, 4.2], # LElbowYaw
-        [0.8, 2.1, 3.4, 4.2], # LElbowRoll
-        [0.8, 2.1, 3.4, 4.2], # LWristYaw
-        [0.8, 1.5, 2.1, 3.0, 3.6, 4.2], # LHand
-        [0.8, 2.1, 3.4, 4.2], # RShoulderPitch
-        [0.8, 2.1, 3.4, 4.2], # RShoulderRoll
-        [0.8, 2.1, 3.4, 4.2], # RElbowYaw
-        [0.8, 2.1, 3.4, 4.2], # RElbowRoll
-        [0.8, 2.1, 3.4, 4.2], # RWristYaw
-        [0.8, 1.5, 2.1, 3.0, 3.6, 4.2], # RHand
-    ]
+    t_grid = [0.35, 0.53, 1.06, 1.59, 2.12, 2.65, 3.18, 3.71, 4.24]
+    times = [list(t_grid) for _ in names]
+
     keys = [
-        [-0.05, 0.1, -0.05, 0.0],
-        [-0.2, 0.2, -0.15, 0.0],
-        [1.2, 0.8, 1.2, 1.4],
-        [0.25, 0.35, 0.25, 0.18],
-        [-1.2, -1.5, -1.2, -1.35],
-        [-0.4, -1.4, -0.4, -0.5],
-        [-0.5, 0.2, -0.5, 0.0],
-        [0.8, 0.0, 0.9, 0.0, 0.8, 0.3],
-        [1.2, 0.8, 1.2, 1.4],
-        [-0.25, -0.35, -0.25, -0.18],
-        [1.2, 1.5, 1.2, 1.35],
-        [0.4, 1.4, 0.4, 0.5],
-        [0.5, -0.2, 0.5, 0.0],
-        [0.8, 0.0, 0.9, 0.0, 0.8, 0.3],
+        [-0.08, 0.10, -0.08, -0.08, 0.12, -0.08, -0.08, 0.10, 0.0],
+        [-0.22, -0.22, 0.22, 0.22, 0.0, -0.18, -0.18, 0.10, 0.0],
+        [1.15, 1.15, 0.80, 0.80, 1.15, 0.85, 0.85, 1.18, 1.18],
+        [0.28, 0.28, 0.36, 0.36, 0.26, 0.34, 0.34, 0.28, 0.28],
+        [-1.15, -1.15, -1.45, -1.45, -1.15, -1.35, -1.35, -1.05, -1.05],
+        [-0.45, -0.45, -1.35, -1.35, -0.45, -1.20, -1.20, -0.85, -0.85],
+        [-0.50, -0.50, 0.25, 0.25, -0.40, 0.20, 0.20, 0.0, 0.0],
+        [0.85, 0.10, 0.90, 0.90, 0.10, 0.85, 0.10, 0.40, 0.40],
+        [1.15, 1.15, 0.80, 0.80, 1.15, 0.85, 0.85, 1.18, 1.18],
+        [-0.28, -0.28, -0.36, -0.36, -0.26, -0.34, -0.34, -0.28, -0.28],
+        [1.15, 1.15, 1.45, 1.45, 1.15, 1.35, 1.35, 1.05, 1.05],
+        [0.45, 0.45, 1.35, 1.35, 0.45, 1.20, 1.20, 0.85, 0.85],
+        [0.50, 0.50, -0.25, -0.25, 0.40, -0.20, -0.20, 0.0, 0.0],
+        [0.85, 0.10, 0.90, 0.90, 0.10, 0.85, 0.10, 0.40, 0.40],
     ]
 
     try:
@@ -61,7 +46,6 @@ def main(robotIP="127.0.0.1", port=9559):
     except Exception as e:
         print("Arm interpolation error: %s" % e)
 
-    # Wait for step to settle cleanly
     motion.waitUntilMoveIsFinished()
 
 if __name__ == "__main__":

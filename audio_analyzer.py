@@ -147,38 +147,30 @@ def get_energy_profile(file_path, num_slices=10):
 
     dur = get_audio_duration(file_path)
     
-    # Check if we can read raw samples from WAV
+    # Pure-Python WAV RMS extraction (works in Python 2.7 and Python 3 without numpy)
     is_wav = file_path.lower().endswith('.wav')
-    if is_wav and _HAS_NUMPY:
+    if is_wav:
         try:
             with wave.open(file_path, 'r') as w:
-                n_channels = w.getnchannels()
                 sampwidth = w.getsampwidth()
-                framerate = w.getframerate()
                 n_frames = w.getnframes()
-                
-                # Sample 1000 frames per slice to keep it fast
                 slice_frames = n_frames // num_slices
-                if slice_frames > 0:
+                if slice_frames > 0 and sampwidth == 2:
                     energies = []
                     for i in range(num_slices):
                         w.setpos(i * slice_frames)
-                        # Read 2000 frames
-                        n_to_read = min(2000, slice_frames)
+                        n_to_read = min(4000, slice_frames)
                         raw_data = w.readframes(n_to_read)
-                        if sampwidth == 2:
-                            # 16-bit PCM
-                            count = len(raw_data) // 2
-                            samples = struct.unpack('<%dh' % count, raw_data)
-                            rms = math.sqrt(sum(s*s for s in samples) / max(len(samples), 1))
-                            energies.append(rms)
-                        else:
-                            energies.append(1000.0)
-                    
+                        count = len(raw_data) // 2
+                        samples = struct.unpack('<%dh' % count, raw_data)
+                        # Subsample every 2nd sample for speed
+                        sub = samples[::2] if count > 2 else samples
+                        rms = math.sqrt(sum(s * s for s in sub) / float(max(len(sub), 1)))
+                        energies.append(rms)
+
                     max_e = max(energies) if max(energies) > 0 else 1.0
                     min_e = min(energies)
                     scale = max(max_e - min_e, 1.0)
-                    # Normalize to 1.0 - 5.0
                     profile = [round(1.0 + 4.0 * (e - min_e) / scale, 2) for e in energies]
                     rhythm = detect_tempo_and_beats(file_path)
                     return {
@@ -189,7 +181,7 @@ def get_energy_profile(file_path, num_slices=10):
                         'beat_interval': rhythm['beat_interval'],
                         'bar_interval': rhythm['bar_interval']
                     }
-        except Exception as e:
+        except Exception:
             pass
 
     # Generic musical structure heuristic (Intro -> Build -> Drop/Chorus -> Bridge -> Outro)
@@ -254,6 +246,68 @@ def detect_tempo_and_beats(file_path):
     beat_interval = round(60.0 / bpm, 3)
     bar_interval = round(beat_interval * 4.0, 3)
     return {'bpm': bpm, 'beat_interval': beat_interval, 'bar_interval': bar_interval, 'duration': dur}
+
+def get_bar_features(file_path, bpm=113.3, phase=0.21):
+    """Extracts per-bar normalized energy (1.0-5.0) and beat-dip pause flags from a 16-bit PCM WAV."""
+    if not file_path or not os.path.exists(file_path) or not file_path.lower().endswith('.wav'):
+        return None
+    try:
+        w = wave.open(file_path, 'r')
+        try:
+            sampwidth = w.getsampwidth()
+            rate = w.getframerate()
+            n_frames = w.getnframes()
+            if sampwidth != 2 or rate <= 0 or n_frames <= 0:
+                return None
+            dur = float(n_frames) / float(rate)
+            beat = 60.0 / float(bpm)
+            bar = beat * 4.0
+            beat_frames = max(1, int(beat * rate))
+            raw_bars = []
+            t0 = float(phase)
+            while t0 + bar <= dur:
+                b_rms = []
+                for k in range(4):
+                    s0 = min(int((t0 + k * beat) * rate), n_frames - 1)
+                    w.setpos(s0)
+                    raw = w.readframes(min(beat_frames, n_frames - s0))
+                    count = len(raw) // 2
+                    if count > 0:
+                        samples = struct.unpack('<%dh' % count, raw)[::4]
+                        rms = math.sqrt(sum(s * s for s in samples) / float(max(len(samples), 1)))
+                    else:
+                        rms = 0.0
+                    b_rms.append(rms)
+                bar_rms = sum(b_rms) / 4.0
+                has_pause = (min(b_rms) < bar_rms * 0.78) if bar_rms > 0 else False
+                raw_bars.append((t0, bar_rms, has_pause))
+                t0 += bar
+        finally:
+            w.close()
+
+        if not raw_bars:
+            return None
+        energies = [r[1] for r in raw_bars]
+        min_e = min(energies)
+        scale = max(max(energies) - min_e, 1.0)
+        bars = [
+            {
+                't': round(t_val, 2),
+                'energy': round(1.0 + 4.0 * (e_val - min_e) / scale, 2),
+                'has_pause': p_flag
+            }
+            for (t_val, e_val, p_flag) in raw_bars
+        ]
+        return {
+            'bpm': bpm,
+            'phase': phase,
+            'beat_interval': round(beat, 5),
+            'bar_interval': round(bar, 5),
+            'duration': dur,
+            'bars': bars
+        }
+    except Exception:
+        return None
 
 if __name__ == '__main__':
     target = sys.argv[1] if len(sys.argv) > 1 else 'classic_hit.wav'

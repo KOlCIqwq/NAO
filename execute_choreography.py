@@ -17,6 +17,88 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 positions_dir = os.path.join(script_dir, "RobotPositions")
 sys.path.insert(0, positions_dir)
 
+_SYNC_STATE = {"music_start": None, "bpm": 113.3, "phase": 0.21, "sim_scale": 0.85}
+
+def _max_time(t_obj):
+    if isinstance(t_obj, (int, float)):
+        return float(t_obj)
+    if isinstance(t_obj, (list, tuple)) and t_obj:
+        if isinstance(t_obj[0], (list, tuple)):
+            vals = [max(float(x) for x in tl) for tl in t_obj if tl]
+            return max(vals) if vals else 0.0
+        return max(float(x) for x in t_obj)
+    return 0.0
+
+def _scale_times(times, names, scale):
+    if isinstance(times, (int, float)):
+        return round(max(0.25, float(times) * scale), 3)
+    if not isinstance(times, (list, tuple)) or not times:
+        return times
+    if isinstance(times[0], (list, tuple)):
+        out = []
+        for tl in times:
+            prev = 0.0
+            new_tl = []
+            for raw_t in tl:
+                st = round(max(0.18, float(raw_t) * scale), 3)
+                if st - prev < 0.16:
+                    st = round(prev + 0.16, 3)
+                new_tl.append(st)
+                prev = st
+            out.append(new_tl)
+        return out
+    is_single_joint = (not isinstance(names, (list, tuple))) or len(names) == 1
+    if is_single_joint:
+        prev = 0.0
+        out = []
+        for raw_t in times:
+            st = round(max(0.18, float(raw_t) * scale), 3)
+            if st - prev < 0.16:
+                st = round(prev + 0.16, 3)
+            out.append(st)
+            prev = st
+        return out
+    return [round(max(0.18, float(raw_t) * scale), 3) for raw_t in times]
+
+class _SyncedMotionProxy(object):
+    def __init__(self, real_proxy):
+        self._real = real_proxy
+
+    def angleInterpolation(self, names, keys, times, isAbsolute=True):
+        nominal_max = _max_time(times)
+        if _SYNC_STATE["music_start"] is None or nominal_max <= 0.3:
+            return self._real.angleInterpolation(names, keys, times, isAbsolute)
+
+        sim_scale = _SYNC_STATE["sim_scale"]
+        beat_dt = 60.0 / float(_SYNC_STATE["bpm"])
+        phase = float(_SYNC_STATE["phase"])
+        rem = nominal_max % beat_dt
+        is_beat_move = isinstance(times, (list, tuple)) and nominal_max >= 1.8 and (rem < 0.08 or (beat_dt - rem) < 0.08)
+
+        if is_beat_move:
+            t_now = time.time() - _SYNC_STATE["music_start"]
+            target_end = phase + round((t_now + nominal_max - phase) / beat_dt) * beat_dt
+            desired_wall = max(nominal_max * 0.82, min(nominal_max * 1.12, target_end - t_now))
+            scale = (desired_wall / nominal_max) * sim_scale
+        else:
+            scale = sim_scale
+
+        scale = max(0.62, min(1.05, scale))
+        scaled_times = _scale_times(times, names, scale)
+        sent_max = _max_time(scaled_times)
+
+        t0 = time.time()
+        res = self._real.angleInterpolation(names, keys, scaled_times, isAbsolute)
+        wall_dt = time.time() - t0
+
+        if wall_dt > 0.5 and sent_max > 0.5:
+            measured = max(0.62, min(1.05, sent_max / wall_dt))
+            _SYNC_STATE["sim_scale"] = 0.55 * _SYNC_STATE["sim_scale"] + 0.45 * measured
+        return res
+
+    def __getattr__(self, name):
+        return getattr(self._real, name)
+
 try:
     from naoqi import ALProxy
     _orig_ALProxy = ALProxy
@@ -62,7 +144,9 @@ try:
         key = (name, ip, port)
         if key not in _proxy_cache:
             p = _orig_ALProxy(name, ip, port)
-            if name == "ALRobotPosture":
+            if name == "ALMotion":
+                p = _SyncedMotionProxy(p)
+            elif name == "ALRobotPosture":
                 m = _cached_ALProxy("ALMotion", ip, port)
                 p = _FastPostureProxy(p, m)
             _proxy_cache[key] = p
@@ -85,25 +169,72 @@ time.sleep = _fluid_sleep
 
 def start_music(audio_path):
     """Launches non-blocking background music player."""
-    if not audio_path or not os.path.exists(audio_path):
-        return None
-    print("Starting background music: {}".format(audio_path))
-    try:
+    player = AudioPlayer(audio_path)
+    if player.play():
+        return player
+    return None
+
+class AudioPlayer(object):
+    """Platform-independent background audio player supporting MP3 and WAV."""
+    def __init__(self, audio_path):
+        self.audio_path = os.path.abspath(audio_path) if audio_path else None
+        self.mci = None
+        self.proc = None
+        self.alias = "bg_choreography_music"
+
+    def play(self):
+        if not self.audio_path or not os.path.exists(self.audio_path):
+            print("Audio file not found: {}".format(self.audio_path))
+            return False
+        print("Starting background music: {}".format(os.path.basename(self.audio_path)))
         if sys.platform.startswith("win"):
-            cmd = 'powershell -NoProfile -Command "$p = New-Object -ComObject wmplayer.ocx; $p.openPlayer(\'{}\')"'.format(os.path.abspath(audio_path).replace("\\", "/"))
-            return subprocess.Popen(cmd, shell=True)
+            # Method 1: Windows Multimedia MCI (supports MP3 and WAV headlessly)
+            try:
+                import ctypes
+                self.mci = ctypes.windll.winmm
+                self.mci.mciSendStringA(str("close " + self.alias), None, 0, 0)
+                cmd_open = str('open "' + self.audio_path + '" alias ' + self.alias)
+                ret = self.mci.mciSendStringA(cmd_open, None, 0, 0)
+                if ret == 0:
+                    self.mci.mciSendStringA(str("play " + self.alias), None, 0, 0)
+                    return True
+            except Exception as e:
+                print("MCI audio failed: {}".format(e))
+            # Method 2: PowerShell MediaPlayer fallback
+            try:
+                ps_cmd = "(New-Object -ComObject wmplayer.ocx).openPlayer('" + self.audio_path.replace("'", "''") + "')"
+                self.proc = subprocess.Popen(["powershell", "-NoProfile", "-Command", ps_cmd])
+                return True
+            except Exception as e:
+                print("Windows media fallback failed: {}".format(e))
+                return False
         else:
             player = "mpg123" if os.system("which mpg123 > /dev/null 2>&1") == 0 else "afplay"
-            return subprocess.Popen([player, audio_path])
-    except Exception as e:
-        print("Could not start audio playback: {}".format(e))
-        return None
+            try:
+                self.proc = subprocess.Popen([player, self.audio_path])
+                return True
+            except Exception as e:
+                print("POSIX audio playback failed: {}".format(e))
+                return False
 
-def stop_music(proc):
+    def stop(self):
+        if self.mci is not None:
+            try:
+                self.mci.mciSendStringA(str("stop " + self.alias), None, 0, 0)
+                self.mci.mciSendStringA(str("close " + self.alias), None, 0, 0)
+            except Exception:
+                pass
+        if self.proc is not None:
+            try:
+                self.proc.terminate()
+            except Exception:
+                pass
+
+def stop_music(player):
     """Terminates background music playback cleanly."""
-    if proc is not None:
+    if player is not None:
         try:
-            proc.terminate()
+            player.stop()
         except Exception:
             pass
 
@@ -126,7 +257,11 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
 
     data = load_plan(plan_file)
     moves = data.get("moves", [])
+    details = data.get("details", [])
     total_dur = data.get("total_duration", 0)
+    _SYNC_STATE["bpm"] = float(data.get("bpm", 113.3))
+    _SYNC_STATE["phase"] = float(data.get("phase", 0.21))
+    MAX_WALL_TIME = 114.0  # Reserve ~2.5s for final StandInit settle so total < 120.0s
 
     print("=== NAO Choreography Execution ===")
     if dry_run:
@@ -158,14 +293,29 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
 
     print("Executing {} planned moves (Estimated duration: {:.1f}s)...".format(len(moves), total_dur))
     start_time = time.time()
+    if not dry_run:
+        _SYNC_STATE["music_start"] = start_time
 
     current_posture = "StandInit"
     for idx, move_file in enumerate(moves, 1):
         mod_name = os.path.splitext(move_file)[0]
+        detail = details[idx - 1] if idx - 1 < len(details) else {}
+        move_type = detail.get("type", "INTERMEDIATE")
+        est_dur = float(detail.get("estimated_duration", 4.24))
+        is_disp = ("composite_" in move_file) or any(x in move_file for x in ["7-Move", "8-Move", "9-Diag", "10-Diag"])
+
+        if not dry_run and move_type == "INTERMEDIATE" and not is_disp:
+            elapsed_now = time.time() - start_time
+            if elapsed_now + est_dur > MAX_WALL_TIME:
+                print("--> Step {:02d}/{:02d}: Skipping {} (elapsed {:.1f}s, keeping total < 120s)".format(
+                    idx, len(moves), mod_name, elapsed_now))
+                continue
+
         print("--> Step {:02d}/{:02d}: Executing {}".format(idx, len(moves), mod_name))
+        step_start = time.time()
 
         # Fluid posture transition: if moving from floor/crouch to a standing movement, stand up smoothly
-        is_floor_move = any(x in move_file for x in ["6-Crouch", "16-Sit", "17-SitRelax", "11-Stand", "sitting_mood", "sitting_handkiss", "sitting_wavess"])
+        is_floor_move = ("sitting" in move_file.lower()) or any(x in move_file for x in ["6-Crouch", "16-Sit", "17-SitRelax", "11-Stand"])
         if not is_floor_move and current_posture in ["Crouch", "Sitting"]:
             try:
                 if not dry_run:
@@ -196,9 +346,9 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
                         exec_names.append(n)
                         exec_keys.append(k)
                         exec_times.append(t)
-                    # Uniform lead-in time to prevent Max Velocity violations
+                    # Minimal lead-in time to prevent Max Velocity violations without adding dead air
                     min_t = min(t_list[0] for t_list in exec_times if t_list) if exec_times else 0.0
-                    lead_in = max(0.65, 0.7 - min_t)
+                    lead_in = max(0.25, 0.35 - min_t)
                     adjusted_times = [[round(t + lead_in, 3) for t in t_list] for t_list in exec_times]
                     motion.angleInterpolation(exec_names, exec_keys, adjusted_times, True)
             elif hasattr(mod, "main"):
@@ -219,7 +369,10 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
         elif "11-Stand" in move_file or "14-StandInit" in move_file:
             current_posture = "Standing"
 
-        _orig_sleep(0.05)
+        if not dry_run:
+            now_t = time.time()
+            print("    [t={:.1f}s, step={:.2f}s, scale={:.2f}]".format(
+                now_t - start_time, now_t - step_start, _SYNC_STATE["sim_scale"]))
 
     elapsed = time.time() - start_time
     print("\n=== Choreography Complete ===")

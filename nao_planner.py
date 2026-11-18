@@ -73,6 +73,15 @@ MOVE_MAP = {
     "m_workout": "workout.py",
     "m_headbang": "Headbang.py",
     "m_saxophone": "Saxophone.py",
+    "m_motif_astley": "motif_astley_groove.py",
+    "m_motif_disco": "motif_disco_point.py",
+    "m_motif_clap": "motif_pop_clap.py",
+    "m_motif_sprinkler": "motif_sprinkler.py",
+    "m_motif_snap": "motif_finger_snap.py",
+    "m_motif_wave": "motif_dance_wave.py",
+    "m_motif_sitkiss": "motif_sitting_kiss.py",
+    "m_motif_drop": "motif_beat_drop.py",
+    "m_motif_pause": "motif_groove_pause.py",
 }
 
 FILE_TO_SYMBOL = {v: k for k, v in MOVE_MAP.items()}
@@ -80,7 +89,10 @@ FILE_TO_SYMBOL = {v: k for k, v in MOVE_MAP.items()}
 # Comprehensive Candidate Move Library with Survey Attributes and Physical Preconditions
 # No hardcoded phases: any standing move is eligible while standing, any sitting move while sitting!
 CANDIDATE_MOVES = {
+    # -------------------------------------------------------------------------
     # Composite Layered Moves: Locomotion + Upper Dance Blended (Slide 11 & 15)
+    # Energy: 3.8-4.5 (walking cadence + arm motion) | Pub: 5.0 | Hum: 5.0
+    # -------------------------------------------------------------------------
     "composite_diagleft_snap.py": {
         "dur": 4.24, "energy": 3.8, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 1, "pre": "Standing", "post": "Standing", "disp": True
     },
@@ -93,142 +105,203 @@ CANDIDATE_MOVES = {
     "composite_backward_groove.py": {
         "dur": 4.24, "energy": 4.0, "pub": 4.8, "hum": 4.8, "dx": -1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
     },
-    # Classic & High-Energy Extracted Choregraphe Dances
-    "sprinkler.py": {
-        "dur": 8.76, "energy": 4.8, "pub": 5.3, "hum": 5.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+
+    # -------------------------------------------------------------------------
+    # Beat-Quantized Pop Dance Motifs (113.3 BPM, 1-2 bars, zero leg instability)
+    # High-energy, fluid, music-synchronized 80s pop choreography hooks
+    # -------------------------------------------------------------------------
+    "motif_astley_groove.py": {
+        "dur": 4.24, "energy": 4.6, "pub": 5.6, "hum": 5.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
     },
-    "Saxophone.py": {
-        "dur": 9.88, "energy": 4.5, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    "motif_disco_point.py": {
+        "dur": 4.24, "energy": 4.7, "pub": 5.5, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
     },
-    "Headbang.py": {
-        "dur": 12.6, "energy": 5.0, "pub": 5.0, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    "motif_pop_clap.py": {
+        "dur": 2.12, "energy": 4.6, "pub": 5.6, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
     },
-    "workout.py": {
-        "dur": 16.0, "energy": 4.2, "pub": 4.5, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    "motif_beat_drop.py": {
+        "dur": 2.12, "energy": 4.8, "pub": 5.5, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
     },
-    # Locomotion / Space Usage
-    "7-Move_forward.py": {
-        "dur": 4.2, "energy": 3.0, "pub": 3.0, "hum": 3.5, "dx": 1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
+    "motif_groove_pause.py": {
+        "dur": 2.12, "energy": 2.9, "pub": 5.1, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
     },
-    "8-Move_backward.py": {
-        "dur": 4.2, "energy": 2.8, "pub": 3.0, "hum": 3.5, "dx": -1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
+    "motif_sprinkler.py": {
+        "dur": 4.24, "energy": 4.8, "pub": 5.6, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
-    "9-Diagonal_left.py": {
-        "dur": 3.5, "energy": 3.0, "pub": 3.0, "hum": 3.5, "dx": 0, "dy": 1, "pre": "Standing", "post": "Standing", "disp": True
+    "motif_finger_snap.py": {
+        "dur": 4.24, "energy": 3.8, "pub": 5.2, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
     },
-    "10-Diagonal_right.py": {
-        "dur": 3.6, "energy": 3.0, "pub": 3.0, "hum": 3.5, "dx": 0, "dy": -1, "pre": "Standing", "post": "Standing", "disp": True
+    "motif_dance_wave.py": {
+        "dur": 4.24, "energy": 4.5, "pub": 5.5, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
-    "12-Rotation_foot_RLeg.py": {
-        "dur": 4.5, "energy": 2.5, "pub": 2.5, "hum": 3.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "13-Rotation_foot_LLeg.py": {
-        "dur": 4.5, "energy": 2.5, "pub": 2.5, "hum": 3.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    "motif_sitting_kiss.py": {
+        "dur": 4.24, "energy": 2.2, "pub": 5.2, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False, "pause": True
     },
 
-    # Standing Dance & Rhythmic Character
-    "finger_snap.py": {
-        "dur": 7.4, "energy": 3.2, "pub": 4.5, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "3-Double_movement.py": {
-        "dur": 7.8, "energy": 3.8, "pub": 4.0, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
+    # -------------------------------------------------------------------------
+    # Legacy High-Energy Dances
+    # -------------------------------------------------------------------------
     "whip.py": {
-        "dur": 2.2, "energy": 4.2, "pub": 3.8, "hum": 4.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+        "dur": 2.24, "energy": 5.0, "pub": 4.4, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
+    "new_speedy.py": {
+        "dur": 4.60, "energy": 4.8, "pub": 5.2, "hum": 4.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "new_hiphop.py": {
+        "dur": 5.32, "energy": 4.5, "pub": 4.8, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "Disco.py": {
+        "dur": 5.00, "energy": 4.2, "pub": 4.8, "hum": 4.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "dab.py": {
+        "dur": 4.64, "energy": 4.2, "pub": 5.0, "hum": 4.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+
+    # -------------------------------------------------------------------------
+    # Medium-Energy Rhythmic & Thematic Gestures (vel: 0.3 - 0.5 rad/s)
+    # Calibrated for Verse grooves & narrative storytelling
+    # -------------------------------------------------------------------------
     "high_clap.py": {
-        "dur": 5.6, "energy": 4.5, "pub": 4.8, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+        "dur": 5.60, "energy": 3.8, "pub": 4.5, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
-   "proud.py": {
-        "dur": 4.2, "energy": 2.8, "pub": 3.5, "hum": 3.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "1-Rotation_handgun_object.py": {
-        "dur": 5.0, "energy": 2.0, "pub": 2.5, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "WipeForehead.py": {
-        "dur": 7.8, "energy": 2.5, "pub": 3.0, "hum": 3.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "Hello.py": {
-        "dur": 7.5, "energy": 2.0, "pub": 2.5, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "dab.py": {
-        "dur": 4.6, "energy": 4.5, "pub": 4.2, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    "ThrillerClap.py": {
+        "dur": 5.00, "energy": 4.0, "pub": 4.6, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "ThrillerSnapSnap.py": {
+        "dur": 5.00, "energy": 3.8, "pub": 4.4, "hum": 4.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
     "new_dance.py": {
-        "dur": 3.2, "energy": 3.5, "pub": 3.8, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+        "dur": 3.24, "energy": 3.2, "pub": 3.8, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
-    "guitar.py": {
-        "dur": 6.6, "energy": 3.5, "pub": 4.5, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+
+    # -------------------------------------------------------------------------
+    # Low-Energy / Static Gestures (vel: < 0.3 rad/s, amp: < 1.5 rad)
+    # High penalty during high energy sections, acceptable in intro/outro
+    # -------------------------------------------------------------------------
+    "proud.py": {
+        "dur": 4.20, "energy": 2.0, "pub": 3.0, "hum": 3.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
     "VOnEyes.py": {
-        "dur": 8.0, "energy": 2.5, "pub": 4.0, "hum": 4.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+        "dur": 8.00, "energy": 2.2, "pub": 3.5, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "WipeForehead.py": {
+        "dur": 7.80, "energy": 1.8, "pub": 2.6, "hum": 3.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "Hello.py": {
+        "dur": 7.50, "energy": 1.8, "pub": 2.4, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "1-Rotation_handgun_object.py": {
+        "dur": 5.00, "energy": 1.4, "pub": 2.0, "hum": 2.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
     "2-Right_arm.py": {
-        "dur": 4.5, "energy": 2.0, "pub": 3.0, "hum": 3.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+        "dur": 4.50, "energy": 1.6, "pub": 2.0, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
     "5-Union_arms.py": {
-        "dur": 4.5, "energy": 2.2, "pub": 3.2, "hum": 3.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+        "dur": 4.50, "energy": 1.8, "pub": 2.2, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
     },
-   "15-StandZero.py": {
-        "dur": 3.0, "energy": 1.0, "pub": 1.0, "hum": 1.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "astley_arm_sway.py": {
-        "dur": 6.1, "energy": 4.8, "pub": 5.5, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "Disco.py": {
-        "dur": 5.0, "energy": 4.8, "pub": 5.2, "hum": 5.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "DanceMove.py": {
-       "dur": 8.3, "energy": 4.5, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "ThrillerClap.py": {
-       "dur": 5.0, "energy": 4.5, "pub": 4.8, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "ThrillerSnapSnap.py": {
-       "dur": 5.0, "energy": 4.2, "pub": 4.5, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
-   "new_hiphop.py": {
-        "dur": 5.3, "energy": 4.8, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-   },
+    "15-StandZero.py": {
+        "dur": 3.00, "energy": 1.0, "pub": 1.0, "hum": 1.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
 
-    # Sitting Choreography
+    # -------------------------------------------------------------------------
+    # Pure Locomotion (Unlayered fallback moves)
+    # Low engagement without arms
+    # -------------------------------------------------------------------------
+    "7-Move_forward.py": {
+        "dur": 4.20, "energy": 2.8, "pub": 2.5, "hum": 2.0, "dx": 1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "8-Move_backward.py": {
+        "dur": 4.20, "energy": 2.6, "pub": 2.5, "hum": 2.0, "dx": -1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "9-Diagonal_left.py": {
+        "dur": 3.50, "energy": 2.8, "pub": 2.5, "hum": 2.0, "dx": 0, "dy": 1, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "10-Diagonal_right.py": {
+        "dur": 3.60, "energy": 2.8, "pub": 2.5, "hum": 2.0, "dx": 0, "dy": -1, "pre": "Standing", "post": "Standing", "disp": True
+    },
+    "12-Rotation_foot_RLeg.py": {
+        "dur": 4.50, "energy": 2.2, "pub": 2.0, "hum": 2.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+    "13-Rotation_foot_LLeg.py": {
+        "dur": 4.50, "energy": 2.2, "pub": 2.0, "hum": 2.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
+    },
+
+    # -------------------------------------------------------------------------
+    # Floor / Sitting Choreography (Precondition: Sitting)
+    # -------------------------------------------------------------------------
     "sitting_mood.py": {
-        "dur": 4.2, "energy": 2.0, "pub": 4.0, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False
-    },
-    "sitting_handkiss.py": {
-        "dur": 9.5, "energy": 2.2, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False
-    },
-    "sitting_wavess.py": {
-        "dur": 8.4, "energy": 2.2, "pub": 4.2, "hum": 4.2, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False
+        "dur": 4.20, "energy": 4.2, "pub": 4.4, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False
     },
 }
 
-# The 6 Mandatory Positions (P1..P6)
+# The 6 Mandatory Positions (P1..P6) with calibrated synced wall-clock durations
 MANDATORY_MOVES = [
-    ("14-StandInit.py", "p1_standinit", 0, "Standing", "Standing", 0.3),
-    ("4-Arms_opening.py", "p2_armsopening", 1, "Standing", "Standing", 6.9),
-    ("6-Crouch.py", "p3_crouch", 2, "Standing", "Crouch", 2.4),
-    ("16-Sit.py", "p4_sit", 3, "Crouch", "Sitting", 3.5),
-    ("17-SitRelax.py", "p5_sitrelax", 4, "Sitting", "Sitting", 3.0),
-    ("11-Stand.py", "p6_stand", 5, "Sitting", "Standing", 6.0),
+    ("14-StandInit.py", "p1_standinit", 0, "Standing", "Standing", 0.5),
+    ("4-Arms_opening.py", "p2_armsopening", 1, "Standing", "Standing", 4.0),
+    ("6-Crouch.py", "p3_crouch", 2, "Standing", "Crouch", 2.2),
+    ("16-Sit.py", "p4_sit", 3, "Crouch", "Sitting", 2.5),
+    ("17-SitRelax.py", "p5_sitrelax", 4, "Sitting", "Sitting", 2.5),
+    ("11-Stand.py", "p6_stand", 5, "Sitting", "Standing", 4.0),
 ]
 
-def get_target_music_energy(t_sec):
-    """Dynamic song energy profile E(t) for Rick Astley - Never Gonna Give You Up (113.3 BPM)."""
-    if t_sec < 14.0:
-        return 2.8   # Intro buildup / rhythm teaser
-    elif t_sec < 44.0:
-        return 3.4   # Verse 1 groove & locomotion
-    elif t_sec < 64.0:
-        return 2.2   # Breakdown & floor sitting performance
-    elif t_sec < 88.0:
-        return 4.6   # Explosive Chorus drop & celebration
+_REAL_ENERGY_PROFILE = None
+_REAL_BAR_FEATURES = None
+_REAL_PHASE = 0.21
+_REAL_BAR_DUR = 2.11827
+_REAL_SONG_DURATION = 120.0
+
+def load_real_energy_profile(song_path=None):
+    """Loads per-bar energy & pause features from WAV (or energy profile fallback)."""
+    global _REAL_ENERGY_PROFILE, _REAL_BAR_FEATURES, _REAL_PHASE, _REAL_BAR_DUR, _REAL_SONG_DURATION
+    candidates = []
+    if song_path:
+        base, _ = os.path.splitext(song_path)
+        candidates.extend([base + ".wav", song_path])
+    candidates.extend(["rick_120s.wav", "rick_120s.mp3"])
+    for cand in candidates:
+        if cand and os.path.exists(cand):
+            bar_data = audio_analyzer.get_bar_features(cand)
+            if bar_data and bar_data.get("bars"):
+                _REAL_BAR_FEATURES = bar_data["bars"]
+                _REAL_PHASE = bar_data.get("phase", 0.21)
+                _REAL_BAR_DUR = bar_data.get("bar_interval", 2.11827)
+                _REAL_SONG_DURATION = bar_data.get("duration", 120.0)
+                return bar_data
+            data = audio_analyzer.get_energy_profile(cand, num_slices=24)
+            if data and data.get("profile"):
+                _REAL_ENERGY_PROFILE = data["profile"]
+                _REAL_SONG_DURATION = data.get("duration", 120.0)
+                return data
+    return None
+
+def get_music_features(t_sec):
+    """Returns (target_energy, has_pause) at real 1:1 song timestamp t_sec."""
+    if _REAL_BAR_FEATURES:
+        idx = int(max(0.0, t_sec - _REAL_PHASE) / max(_REAL_BAR_DUR, 0.1))
+        idx = max(0, min(len(_REAL_BAR_FEATURES) - 1, idx))
+        b = _REAL_BAR_FEATURES[idx]
+        return b["energy"], b["has_pause"]
+    if _REAL_ENERGY_PROFILE:
+        idx = int((t_sec / max(_REAL_SONG_DURATION, 1.0)) * len(_REAL_ENERGY_PROFILE))
+        idx = max(0, min(len(_REAL_ENERGY_PROFILE) - 1, idx))
+        return _REAL_ENERGY_PROFILE[idx], False
+    if t_sec < 8.5:
+        return 2.6, (t_sec < 2.2)
+    elif t_sec < 26.0:
+        return 4.0, False
+    elif t_sec < 50.0:
+        return 2.7, False
+    elif t_sec < 85.0:
+        return 4.7, True
     else:
-        return 2.5   # Outro bow & wave
+        return 2.4, False
+
+def get_target_music_energy(t_sec):
+    return get_music_features(t_sec)[0]
 
 class StripsPlanner(object):
     """Classical forward state-space A* STRIPS planner with multi-objective survey heuristic."""
-    def __init__(self, max_duration=112.0, bpm=113.3):
+    def __init__(self, max_duration=98.0, bpm=113.3):
         self.max_duration = max_duration
         self.bpm = bpm
         self.bar_dur = (60.0 / bpm) * 4.0 # ~2.12s per bar
@@ -245,7 +318,7 @@ class StripsPlanner(object):
         best_plan = None
         nodes = 0
 
-        while pq and nodes < 50000:
+        while pq and nodes < 80000:
             f, g, (t, ph, pos, x, y, used, hist, ph_cnt, visited_stage) = heapq.heappop(pq)
             nodes += 1
 
@@ -255,8 +328,8 @@ class StripsPlanner(object):
             visited[state_key] = f
 
             # Goal test: all 6 mandatory phases complete, returned to center (0,0), >= 5 intermediate moves,
-            # visited surrounding stage space, and performed chorus finale in Phase 6
-            if ph == 6 and ph_cnt >= 3 and t >= 98.0 and x == 0 and y == 0 and len(used) >= 8 and visited_stage:
+            # visited surrounding stage space, and performed chorus finale in Phase 6 (within <120s real-time budget)
+            if ph == 6 and ph_cnt >= 5 and t >= 98.0 and x == 0 and y == 0 and len(used) >= 10 and visited_stage:
                 best_plan = (t, g, hist)
                 break
 
@@ -273,15 +346,27 @@ class StripsPlanner(object):
                     else:
                         new_t = t + m_dur
                         if new_t <= self.max_duration:
+                            floor_penalty = 0.0
+                            if m_file == "6-Crouch.py" and (get_music_features(t)[0] > 3.6 or t < 26.0 or t > 38.0):
+                                floor_penalty = 30.0
                             new_hist = hist + ((m_file, "MANDATORY", m_sym, m_dur, ph),)
-                            new_g = g + m_dur
+                            new_g = g + m_dur + floor_penalty
                             h_rem = (6 - (ph + 1)) * 3.0 + (abs(x) + abs(y)) * 4.0
                             heapq.heappush(pq, (new_g + h_rem - (ph + 1) * 6.0, new_g, (new_t, ph + 1, post_pos, x, y, used, new_hist, 0, visited_stage)))
 
             # Action B: Execute an intermediate move from the candidate pool
-            if ph_cnt < 6 and len(used) < 18 and t < (self.max_duration - 4.0):
+            max_ph_cnt = 14 if ph == 6 else 6
+            if ph_cnt < max_ph_cnt and len(used) < 28 and t < (self.max_duration - 2.0):
                 for m_file, info in CANDIDATE_MOVES.items():
-                    max_plays = 2 if m_file in ["astley_arm_sway.py", "composite_diagleft_snap.py", "composite_diagright_sway.py"] else 1
+                    # Never repeat the exact same move twice in a row (keeps choreography dynamic & non-robotic)
+                    if hist and hist[-1][0] == m_file:
+                        continue
+                    if info["dur"] <= 2.5:
+                        max_plays = 3
+                    elif any(m_file.startswith(p) for p in ["motif_", "composite_"]):
+                        max_plays = 2
+                    else:
+                        max_plays = 1
                     if used.count(m_file) >= max_plays:
                         continue
                     if info["pre"] == pos:
@@ -299,14 +384,16 @@ class StripsPlanner(object):
                             # Multi-objective survey scoring:
                             pub = info["pub"]
                             hum = info["hum"]
-                            target_e = get_target_music_energy(t)
+                            target_e, is_pause = get_music_features(t)
                             e_err = abs(info["energy"] - target_e)
                             beat_err = abs((info["dur"] % self.bar_dur) - (self.bar_dur / 2.0))
                             space_bonus = 3.5 if info["disp"] else 0.0
+                            pause_bonus = 2.8 if (is_pause and info.get("pause", False)) else 0.0
+                            short_variety_bonus = 1.5 if (info["dur"] <= 2.5 and hist and hist[-1][3] > 3.0) else 0.0
 
-                            # Positive cost formulation for admissible A* search
-                            quality = (pub * 3.0) + (hum * 3.0) + space_bonus - (e_err * 2.0) - (beat_err * 1.5)
-                            cost_delta = max(0.5, 36.0 - quality)
+                            # Duration-normalized regret so 1-bar (2.12s) & 2-bar (4.24s) moves compete fairly
+                            quality = (pub * 3.0) + (hum * 3.0) + space_bonus + pause_bonus + short_variety_bonus - (e_err * 2.5) - (beat_err * 1.5)
+                            cost_delta = max(0.25, (38.0 - quality) * (info["dur"] / 4.24))
                             new_g = g + cost_delta
                             new_used = used + (m_file,)
                             m_sym = FILE_TO_SYMBOL.get(m_file, "m_custom")
@@ -321,7 +408,12 @@ class StripsPlanner(object):
 
 def write_problem_pddl(plan_history, output_path="problem.pddl"):
     """Exports formal STRIPS PDDL problem instance reflecting the search space and solution."""
-    used_symbols = [item[2] for item in plan_history if item[1] == "INTERMEDIATE"]
+    seen_syms = set()
+    used_symbols = []
+    for item in plan_history:
+        if item[1] == "INTERMEDIATE" and item[2] not in seen_syms:
+            seen_syms.add(item[2])
+            used_symbols.append(item[2])
     lines = [
         "(define (problem nao_choreography_problem)",
         "  (:domain nao_choreography)",
@@ -421,14 +513,18 @@ def generate_full_choreography(song_path=None):
 
     print("=== Multi-Objective Classical AI Choreography Planning ===")
     bpm = 113.3
-    if song_path and os.path.exists(song_path):
-        data = audio_analyzer.get_energy_profile(song_path)
+    phase = 0.21
+    data = load_real_energy_profile(song_path)
+    if data:
         bpm = data.get("bpm", 113.3)
-        print("-> Audio track: %s (Tempo: %.1f BPM)" % (os.path.basename(song_path), bpm))
+        phase = data.get("phase", 0.21)
+        bar_count = len(data.get("bars", []))
+        print("-> Audio track: %s (Tempo: %.1f BPM, %d real bars loaded)" % (
+            os.path.basename(song_path) if song_path else "rick_120s.wav", bpm, bar_count))
 
-    print("-> Search space: 33 candidate moves across standing, locomotion, and sitting postures")
+    print("-> Search space: %d candidate moves across standing, locomotion, and sitting postures" % len(CANDIDATE_MOVES))
     print("-> Optimizing 7 Survey Criteria: Public Involvement, Human Characterization, Beat Alignment, Fluidity")
-    planner = StripsPlanner(max_duration=112.0, bpm=bpm)
+    planner = StripsPlanner(max_duration=108.0, bpm=bpm)
     result = planner.solve()
 
     if not result:
@@ -465,6 +561,8 @@ def generate_full_choreography(song_path=None):
     # Export choreography_plan.json
     output_data = {
         "song_file": os.path.basename(song_path) if song_path else "rick_120s.mp3",
+        "bpm": bpm,
+        "phase": phase,
         "total_duration": round(cum_t, 1),
         "moves": moves_list,
         "details": details_list

@@ -36,6 +36,12 @@ The planning domain models three core actions:
 
 Standard STRIPS solvers do not natively account for musical bar alignment or kinematic fluidity. To solve this, nao_planner.py implements an A* forward state-space search driven by a multi-objective cost function:
 
+Move candidates are evaluated using physical kinematic parameters extracted directly from joint keyframe trajectories rather than arbitrary subjective scores:
+- **Joint velocity (energy)**: Mean angular velocity in radians per second across all joints, distinguishing fast explosive dances (whip at 1.23 rad/s, sprinkler at 0.66 rad/s) from slow gestures (Hello at 0.20 rad/s, handkiss at 0.11 rad/s).
+- **Motion amplitude (public impact)**: Maximum angular excursion across all joints (new_speedy at 4.17 rad, dab at 3.54 rad versus small arm gestures at < 1.4 rad).
+- **Rhythm synchrony**: Exact mathematical offset between move duration and the 113.3 BPM musical beat (0.53s) and 4-beat bar (2.12s).
+- **Human characterization**: Differentiates iconic pantomime and signature choreography (Rick Astley sway at 5.5, Saxophone at 5.0, finger snaps at 5.0) from plain walking steps (2.0) or zero poses (1.0).
+
 ```python
 reward = (public_score * 3.0) + (human_score * 3.0) + space_bonus - (energy_error * 2.0) - (beat_error * 1.5)
 cost_delta = max(0.5, 36.0 - reward)
@@ -76,6 +82,22 @@ detaches arm joints from the walking pattern generator. This allows locomotion a
 - **composite_diagright_sway.py**: A diagonal step right (dx = -0.03m, dy = -0.02m) returning the robot to center stage while performing the Rick Astley arm sway.
 - **composite_forward_groove.py**: A forward advance (dx = 0.04m) layered with rhythmic forearm rolls.
 - **composite_backward_groove.py**: A backward return step (dx = -0.04m) layered with chest-level finger snaps.
+
+### Modular pop dance motifs
+
+Monolithic moves that run for 10 to 16 seconds from start to end (such as generic gym workouts or jazz saxophone pantomimes) disrupt the driving 80s dance-pop energy of "Never Gonna Give You Up" and feel robotic due to slow wind-up and wind-down phases.
+
+To achieve continuous, fluent human-like dancing, the candidate library provides modular dance motifs quantized strictly to musical bars at 113.3 BPM (beat = 0.53 seconds, 1 bar = 2.12 seconds, 2 bars = 4.24 seconds):
+
+- **motif_astley_groove.py** (4.24s, 2 bars): The iconic Rick Astley shoulder and arm sway from the music video, swaying across beats 2, 4, 6, and 8.
+- **motif_disco_point.py** (4.24s, 2 bars): Classic 80s disco pointing (right hand high-right on beat 2, down to hip on beat 4; left hand high-left on beat 6, down on beat 8).
+- **motif_pop_clap.py** (2.12s, 1 bar): High-energy syncopated claps hitting directly on snare drum beats 2 and 4.
+- **motif_sprinkler.py** (4.24s, 2 bars): Classic party sprinkler dance with right hand behind the head while the left arm ticks forward across beats 1 through 4 and sweeps back smoothly across beats 5 through 8.
+- **motif_dance_wave.py** (4.24s, 2 bars): Fluid pop arm roll and chest wave with rhythmic head bounces.
+- **motif_finger_snap.py** (4.24s, 2 bars): Rhythmic finger snaps alternating left and right on the snare hits.
+- **motif_sitting_kiss.py** (4.24s, 2 bars): Floor engagement gesture for the calm bridge (Phase 4), blowing a kiss and waving to the audience.
+
+Because these motifs begin and end in neutral upper-body ready postures while preserving stable standing leg angles, they chain back to back seamlessly without awkward pauses or simulator tipping.
 
 ## 4. Simulator stability and kinematic bug fixes
 
