@@ -2,270 +2,270 @@
   "song_file": "rick_120s.mp3",
   "bpm": 113.3,
   "phase": 0.21,
-  "total_duration": 98.1,
+  "total_duration": 111.0,
   "moves": [
     "14-StandInit.py",
-    "motif_groove_pause.py",
-    "composite_diagleft_snap.py",
-    "4-Arms_opening.py",
-    "motif_pop_clap.py",
-    "composite_diagright_sway.py",
-    "motif_astley_groove.py",
-    "motif_pop_clap.py",
-    "motif_astley_groove.py",
-    "motif_groove_pause.py",
-    "6-Crouch.py",
+    "WipeForehead.py",
+    "3-Double_movement.py",
+    "Hello.py",
+    "sprinkler.py",
+    "15-StandZero.py",
+    "motif_disco_point.py",
     "16-Sit.py",
-    "motif_sitting_kiss.py",
     "17-SitRelax.py",
     "11-Stand.py",
-    "motif_finger_snap.py",
-    "motif_pop_clap.py",
-    "motif_sprinkler.py",
-    "motif_dance_wave.py",
-    "motif_sprinkler.py",
-    "motif_beat_drop.py",
-    "motif_dance_wave.py",
-    "motif_beat_drop.py",
     "motif_disco_point.py",
     "motif_beat_drop.py",
     "motif_disco_point.py",
-    "new_hiphop.py",
+    "dab.py",
+    "4-Arms_opening.py",
+    "dab.py",
+    "8-Move_backward.py",
     "ThrillerClap.py",
-    "motif_finger_snap.py"
+    "motif_pop_clap.py",
+    "ThrillerClap.py",
+    "motif_finger_snap.py",
+    "7-Move_forward.py",
+    "motif_astley_groove.py",
+    "motif_beat_drop.py",
+    "motif_astley_groove.py",
+    "motif_beat_drop.py",
+    "motif_astley_groove.py",
+    "motif_groove_pause.py",
+    "6-Crouch.py"
   ],
   "details": [
     {
       "step": 1,
-      "type": "MANDATORY",
-      "symbol": "p1_standinit",
+      "type": "INITIAL",
       "file": "14-StandInit.py",
-      "phase": 0,
+      "official": false,
+      "section": 0,
       "estimated_duration": 0.5
     },
     {
       "step": 2,
-      "type": "INTERMEDIATE",
-      "symbol": "m_motif_pause",
-      "file": "motif_groove_pause.py",
-      "phase": 1,
-      "estimated_duration": 2.12
+      "type": "MANDATORY",
+      "file": "WipeForehead.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 6.0
     },
     {
       "step": 3,
       "type": "INTERMEDIATE",
-      "symbol": "m_comp_diagleft_snap",
-      "file": "composite_diagleft_snap.py",
-      "phase": 1,
-      "estimated_duration": 4.24
+      "file": "3-Double_movement.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 4.4
     },
     {
       "step": 4,
       "type": "MANDATORY",
-      "symbol": "p2_armsopening",
-      "file": "4-Arms_opening.py",
-      "phase": 1,
-      "estimated_duration": 4.0
+      "file": "Hello.py",
+      "official": true,
+      "section": 1,
+      "estimated_duration": 5.6
     },
     {
       "step": 5,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_clap",
-      "file": "motif_pop_clap.py",
-      "phase": 2,
-      "estimated_duration": 2.12
+      "file": "sprinkler.py",
+      "official": true,
+      "section": 1,
+      "estimated_duration": 10.4
     },
     {
       "step": 6,
-      "type": "INTERMEDIATE",
-      "symbol": "m_comp_diagright_sway",
-      "file": "composite_diagright_sway.py",
-      "phase": 2,
-      "estimated_duration": 4.24
+      "type": "MANDATORY",
+      "file": "15-StandZero.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 1.4
     },
     {
       "step": 7,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_astley",
-      "file": "motif_astley_groove.py",
-      "phase": 2,
+      "file": "motif_disco_point.py",
+      "official": false,
+      "section": 0,
       "estimated_duration": 4.24
     },
     {
       "step": 8,
-      "type": "INTERMEDIATE",
-      "symbol": "m_motif_clap",
-      "file": "motif_pop_clap.py",
-      "phase": 2,
-      "estimated_duration": 2.12
+      "type": "MANDATORY",
+      "file": "16-Sit.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 3.5
     },
     {
       "step": 9,
-      "type": "INTERMEDIATE",
-      "symbol": "m_motif_astley",
-      "file": "motif_astley_groove.py",
-      "phase": 2,
-      "estimated_duration": 4.24
+      "type": "MANDATORY",
+      "file": "17-SitRelax.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 2.5
     },
     {
       "step": 10,
-      "type": "INTERMEDIATE",
-      "symbol": "m_motif_pause",
-      "file": "motif_groove_pause.py",
-      "phase": 2,
-      "estimated_duration": 2.12
+      "type": "MANDATORY",
+      "file": "11-Stand.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 3.3
     },
     {
       "step": 11,
-      "type": "MANDATORY",
-      "symbol": "p3_crouch",
-      "file": "6-Crouch.py",
-      "phase": 2,
-      "estimated_duration": 2.2
+      "type": "INTERMEDIATE",
+      "file": "motif_disco_point.py",
+      "official": false,
+      "section": 0,
+      "estimated_duration": 4.24
     },
     {
       "step": 12,
-      "type": "MANDATORY",
-      "symbol": "p4_sit",
-      "file": "16-Sit.py",
-      "phase": 3,
-      "estimated_duration": 2.5
+      "type": "INTERMEDIATE",
+      "file": "motif_beat_drop.py",
+      "official": false,
+      "section": 0,
+      "estimated_duration": 2.12
     },
     {
       "step": 13,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_sitkiss",
-      "file": "motif_sitting_kiss.py",
-      "phase": 4,
+      "file": "motif_disco_point.py",
+      "official": false,
+      "section": 0,
       "estimated_duration": 4.24
     },
     {
       "step": 14,
-      "type": "MANDATORY",
-      "symbol": "p5_sitrelax",
-      "file": "17-SitRelax.py",
-      "phase": 4,
-      "estimated_duration": 2.5
+      "type": "INTERMEDIATE",
+      "file": "dab.py",
+      "official": false,
+      "section": 1,
+      "estimated_duration": 4.64
     },
     {
       "step": 15,
-      "type": "MANDATORY",
-      "symbol": "p6_stand",
-      "file": "11-Stand.py",
-      "phase": 5,
-      "estimated_duration": 4.0
+      "type": "INTERMEDIATE",
+      "file": "4-Arms_opening.py",
+      "official": true,
+      "section": 1,
+      "estimated_duration": 5.0
     },
     {
       "step": 16,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_snap",
-      "file": "motif_finger_snap.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "dab.py",
+      "official": false,
+      "section": 1,
+      "estimated_duration": 4.64
     },
     {
       "step": 17,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_clap",
-      "file": "motif_pop_clap.py",
-      "phase": 6,
-      "estimated_duration": 2.12
+      "file": "8-Move_backward.py",
+      "official": true,
+      "section": 1,
+      "estimated_duration": 3.5
     },
     {
       "step": 18,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_sprinkler",
-      "file": "motif_sprinkler.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "ThrillerClap.py",
+      "official": false,
+      "section": 1,
+      "estimated_duration": 5.0
     },
     {
       "step": 19,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_wave",
-      "file": "motif_dance_wave.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "motif_pop_clap.py",
+      "official": false,
+      "section": 1,
+      "estimated_duration": 2.12
     },
     {
       "step": 20,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_sprinkler",
-      "file": "motif_sprinkler.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "ThrillerClap.py",
+      "official": false,
+      "section": 1,
+      "estimated_duration": 5.0
     },
     {
       "step": 21,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_drop",
-      "file": "motif_beat_drop.py",
-      "phase": 6,
-      "estimated_duration": 2.12
+      "file": "motif_finger_snap.py",
+      "official": false,
+      "section": 1,
+      "estimated_duration": 4.24
     },
     {
       "step": 22,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_wave",
-      "file": "motif_dance_wave.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "7-Move_forward.py",
+      "official": true,
+      "section": 0,
+      "estimated_duration": 3.5
     },
     {
       "step": 23,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_drop",
-      "file": "motif_beat_drop.py",
-      "phase": 6,
-      "estimated_duration": 2.12
+      "file": "motif_astley_groove.py",
+      "official": false,
+      "section": 0,
+      "estimated_duration": 4.24
     },
     {
       "step": 24,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_disco",
-      "file": "motif_disco_point.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "motif_beat_drop.py",
+      "official": false,
+      "section": 0,
+      "estimated_duration": 2.12
     },
     {
       "step": 25,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_drop",
-      "file": "motif_beat_drop.py",
-      "phase": 6,
-      "estimated_duration": 2.12
+      "file": "motif_astley_groove.py",
+      "official": false,
+      "section": 0,
+      "estimated_duration": 4.24
     },
     {
       "step": 26,
       "type": "INTERMEDIATE",
-      "symbol": "m_motif_disco",
-      "file": "motif_disco_point.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "file": "motif_beat_drop.py",
+      "official": false,
+      "section": 0,
+      "estimated_duration": 2.12
     },
     {
       "step": 27,
       "type": "INTERMEDIATE",
-      "symbol": "m_newhiphop",
-      "file": "new_hiphop.py",
-      "phase": 6,
-      "estimated_duration": 5.32
+      "file": "motif_astley_groove.py",
+      "official": false,
+      "section": 2,
+      "estimated_duration": 4.24
     },
     {
       "step": 28,
       "type": "INTERMEDIATE",
-      "symbol": "m_thriller",
-      "file": "ThrillerClap.py",
-      "phase": 6,
-      "estimated_duration": 5.0
+      "file": "motif_groove_pause.py",
+      "official": false,
+      "section": 2,
+      "estimated_duration": 2.12
     },
     {
       "step": 29,
-      "type": "INTERMEDIATE",
-      "symbol": "m_motif_snap",
-      "file": "motif_finger_snap.py",
-      "phase": 6,
-      "estimated_duration": 4.24
+      "type": "GOAL",
+      "file": "6-Crouch.py",
+      "official": true,
+      "section": 2,
+      "estimated_duration": 1.8
     }
   ]
 }

@@ -17,7 +17,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 positions_dir = os.path.join(script_dir, "RobotPositions")
 sys.path.insert(0, positions_dir)
 
-_SYNC_STATE = {"music_start": None, "bpm": 113.3, "phase": 0.21, "sim_scale": 0.85}
+_SYNC_STATE = {"music_start": None, "bpm": 113.3, "phase": 0.21, "sim_scale": 0.77, "target_end": None}
 
 def _max_time(t_obj):
     if isinstance(t_obj, (int, float)):
@@ -60,9 +60,31 @@ def _scale_times(times, names, scale):
         return out
     return [round(max(0.18, float(raw_t) * scale), 3) for raw_t in times]
 
+class _SyncedPostProxy(object):
+    def __init__(self, real_post):
+        self._real_post = real_post
+
+    def angleInterpolation(self, names, keys, times, isAbsolute=True):
+        nominal_max = _max_time(times)
+        if _SYNC_STATE["music_start"] is None or nominal_max <= 0.3:
+            return self._real_post.angleInterpolation(names, keys, times, isAbsolute)
+        scale = max(0.62, min(1.05, float(_SYNC_STATE["sim_scale"])))
+        scaled_times = _scale_times(times, names, scale)
+        return self._real_post.angleInterpolation(names, keys, scaled_times, isAbsolute)
+
+    def __getattr__(self, name):
+        return getattr(self._real_post, name)
+
 class _SyncedMotionProxy(object):
     def __init__(self, real_proxy):
         self._real = real_proxy
+        self._post = None
+
+    @property
+    def post(self):
+        if self._post is None:
+            self._post = _SyncedPostProxy(self._real.post)
+        return self._post
 
     def angleInterpolation(self, names, keys, times, isAbsolute=True):
         nominal_max = _max_time(times)
@@ -72,12 +94,16 @@ class _SyncedMotionProxy(object):
         sim_scale = _SYNC_STATE["sim_scale"]
         beat_dt = 60.0 / float(_SYNC_STATE["bpm"])
         phase = float(_SYNC_STATE["phase"])
-        rem = nominal_max % beat_dt
-        is_beat_move = isinstance(times, (list, tuple)) and nominal_max >= 1.8 and (rem < 0.08 or (beat_dt - rem) < 0.08)
+        is_beat_move = isinstance(times, (list, tuple)) and nominal_max >= 1.5
 
         if is_beat_move:
             t_now = time.time() - _SYNC_STATE["music_start"]
-            target_end = phase + round((t_now + nominal_max - phase) / beat_dt) * beat_dt
+            raw_end = t_now + nominal_max
+            plan_end = _SYNC_STATE.get("target_end")
+            if plan_end is not None:
+                drift = raw_end - float(plan_end)
+                raw_end += max(-beat_dt, min(beat_dt, -drift))
+            target_end = phase + round((raw_end - phase) / beat_dt) * beat_dt
             desired_wall = max(nominal_max * 0.82, min(nominal_max * 1.12, target_end - t_now))
             scale = (desired_wall / nominal_max) * sim_scale
         else:
@@ -120,7 +146,13 @@ try:
             # Using verified direct joint interpolation transitions in 2.5s smoothly with 100% balance.
             if self._motion is not None:
                 if postureName == "Sit":
-                    self._motion.angleInterpolation(_SIT_NAMES, _SIT_ANGLES, 2.5, True)
+                    try:
+                        curr = self._real.getPosture()
+                        if curr not in ["Crouch", "Sit", "Sitting", "SitRelax"]:
+                            self._motion.angleInterpolation(_SIT_NAMES, _CROUCH_ANGLES, 1.2, True)
+                    except Exception:
+                        pass
+                    self._motion.angleInterpolation(_SIT_NAMES, _SIT_ANGLES, 2.2, True)
                     return True
                 elif postureName == "SitRelax":
                     self._motion.angleInterpolation(_SIT_NAMES, _SITRELAX_ANGLES, 2.5, True)
@@ -154,6 +186,7 @@ try:
     # Patch naoqi.ALProxy so imported move modules reuse existing connections
     import naoqi
     naoqi.ALProxy = _cached_ALProxy
+    ALProxy = _cached_ALProxy
 except ImportError:
     ALProxy = None
     _orig_ALProxy = None
@@ -261,7 +294,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
     total_dur = data.get("total_duration", 0)
     _SYNC_STATE["bpm"] = float(data.get("bpm", 113.3))
     _SYNC_STATE["phase"] = float(data.get("phase", 0.21))
-    MAX_WALL_TIME = 114.0  # Reserve ~2.5s for final StandInit settle so total < 120.0s
+    MAX_WALL_TIME = 115.5  # Reserve ~2.5s for final GOAL Crouch settle so total < 120.0s
 
     print("=== NAO Choreography Execution ===")
     if dry_run:
@@ -297,6 +330,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
         _SYNC_STATE["music_start"] = start_time
 
     current_posture = "StandInit"
+    planned_cum_t = 0.0
     for idx, move_file in enumerate(moves, 1):
         mod_name = os.path.splitext(move_file)[0]
         detail = details[idx - 1] if idx - 1 < len(details) else {}
@@ -311,7 +345,18 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
                     idx, len(moves), mod_name, elapsed_now))
                 continue
 
+        planned_cum_t += est_dur
+        if not dry_run:
+            _SYNC_STATE["target_end"] = planned_cum_t
+
         print("--> Step {:02d}/{:02d}: Executing {}".format(idx, len(moves), mod_name))
+        if not dry_run and move_type == "INTERMEDIATE":
+            beat_dt = 60.0 / float(_SYNC_STATE["bpm"])
+            phase = float(_SYNC_STATE["phase"])
+            past = ((time.time() - start_time) - phase) % beat_dt
+            wait = beat_dt - past
+            if 0.02 < wait <= 0.28:
+                _orig_sleep(wait)
         step_start = time.time()
 
         # Fluid posture transition: if moving from floor/crouch to a standing movement, stand up smoothly
@@ -346,9 +391,9 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
                         exec_names.append(n)
                         exec_keys.append(k)
                         exec_times.append(t)
-                    # Minimal lead-in time to prevent Max Velocity violations without adding dead air
+                    # Smooth lead-in time to blend from previous pose and prevent Max Velocity spikes
                     min_t = min(t_list[0] for t_list in exec_times if t_list) if exec_times else 0.0
-                    lead_in = max(0.25, 0.35 - min_t)
+                    lead_in = max(0.0, 0.45 - min_t)
                     adjusted_times = [[round(t + lead_in, 3) for t in t_list] for t_list in exec_times]
                     motion.angleInterpolation(exec_names, exec_keys, adjusted_times, True)
             elif hasattr(mod, "main"):
@@ -371,8 +416,12 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
 
         if not dry_run:
             now_t = time.time()
-            print("    [t={:.1f}s, step={:.2f}s, scale={:.2f}]".format(
-                now_t - start_time, now_t - step_start, _SYNC_STATE["sim_scale"]))
+            beat_dt = 60.0 / float(_SYNC_STATE["bpm"])
+            phase = float(_SYNC_STATE["phase"])
+            raw_off = ((now_t - start_time) - phase) % beat_dt
+            beat_off = raw_off - beat_dt if raw_off > (beat_dt / 2.0) else raw_off
+            print("    [t={:.1f}s (plan={:.1f}s), step={:.2f}s, scale={:.2f}, beat_off={:+.2f}s]".format(
+                now_t - start_time, planned_cum_t, now_t - step_start, _SYNC_STATE["sim_scale"], beat_off))
 
     elapsed = time.time() - start_time
     print("\n=== Choreography Complete ===")
@@ -380,23 +429,26 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
 
     stop_music(music_proc)
     if not dry_run:
-        print("Choreography finished. Maintaining final standing pose.")
-        # Returning via goToPosture("StandInit") triggers inverse-kinematics leg solver
-        # which abruptly jerks leg joints and knocks the simulated robot over.
-        # Returning smoothly via upper-body angle interpolation keeps the robot standing safely.
-        stand_init_names = [
-            "HeadYaw", "HeadPitch",
-            "LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll", "LWristYaw", "LHand",
-            "RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand"
-        ]
-        stand_init_angles = [
-            0.0, 0.0,
-            1.4, 0.18, -1.35, -0.5, 0.0, 0.3,
-            1.4, -0.18, 1.35, 0.5, 0.0, 0.3
-        ]
-        motion.angleInterpolation(stand_init_names, stand_init_angles, 2.0, True)
-       # In simulated NAO (Choregraphe), motion.rest() shuts down motor stiffness while standing,
-        # causing gravity simulation to drop the robot onto the floor. Keep StandInit stable.
+        if current_posture == "Crouch":
+            print("Choreography finished. Holding final Crouch goal pose.")
+        else:
+            print("Choreography finished. Maintaining final standing pose.")
+            # Returning via goToPosture("StandInit") triggers inverse-kinematics leg solver
+            # which abruptly jerks leg joints and knocks the simulated robot over.
+            # Returning smoothly via upper-body angle interpolation keeps the robot standing safely.
+            stand_init_names = [
+                "HeadYaw", "HeadPitch",
+                "LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll", "LWristYaw", "LHand",
+                "RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand"
+            ]
+            stand_init_angles = [
+                0.0, 0.0,
+                1.4, 0.18, -1.35, -0.5, 0.0, 0.3,
+                1.4, -0.18, 1.35, 0.5, 0.0, 0.3
+            ]
+            motion.angleInterpolation(stand_init_names, stand_init_angles, 2.0, True)
+            # In simulated NAO (Choregraphe), motion.rest() shuts down motor stiffness while standing,
+            # causing gravity simulation to drop the robot onto the floor. Keep StandInit stable.
     print("Finished successfully.")
     return True
 

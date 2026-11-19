@@ -298,6 +298,23 @@ def get_bar_features(file_path, bpm=113.3, phase=0.21):
             }
             for (t_val, e_val, p_flag) in raw_bars
         ]
+        # Cluster 4-bar phrases by average energy to detect repeating song sections
+        centers = []
+        for i in range(0, len(bars), 4):
+            chunk = bars[i:i + 4]
+            e_avg = sum(b['energy'] for b in chunk) / float(len(chunk))
+            best_s, best_d = None, 999.0
+            for s_id, c_e in enumerate(centers):
+                d = abs(e_avg - c_e)
+                if d < best_d:
+                    best_d, best_s = d, s_id
+            if best_s is not None and best_d <= 0.65:
+                sec_id = best_s
+            else:
+                sec_id = len(centers)
+                centers.append(e_avg)
+            for b in chunk:
+                b['section'] = sec_id
         return {
             'bpm': bpm,
             'phase': phase,

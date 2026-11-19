@@ -1,254 +1,254 @@
 """
 NAO Choreography Planner
-Autonomous Classical STRIPS / PDDL Planning with Multi-Objective Forward A* Search.
-Evaluates the FULL candidate library without hardcoded phase assignments.
-
-Supports:
-1. Audio Rhythm & Energy Analysis: Calibrated for Rick Astley - Never Gonna Give You Up (113.3 BPM).
-2. Autonomous forward state-space A* search scoring the 7 competition survey criteria:
-   - Theme & narrative arc (P1..P6 strictly sequence-ordered at the structural level)
-   - Rhythmic bar alignment (113.3 BPM integer bar multiples, bar = ~2.12s)
-   - Fluidity & posture compatibility (Standing vs Sitting)
-   - Public involvement score (rewarding audience interactions: handkiss, hello, handgun, high_clap)
-   - Human characterization score (rewarding natural human gestures: finger_snap, double_movement, proud)
-   - Stage space exploration with strict net zero displacement (dx = 0, dy = 0)
-   - Strict real-time execution constraint (< 100s, within 120s limit)
-3. Formal STRIPS domain.pddl / problem.pddl export and plan execution mapping.
+Autonomous forward state-space A* planner compliant with the NAO Planning Competition rules:
+- Initial state: StandInit | Goal state: Crouch
+- All 6 mandatory positions {Sit, SitRelax, WipeForehead, Stand, Hello, StandZero}
+  scheduled dynamically by A* in any valid posture-consistent order
+- At least 5 official Slide 16/17 intermediate moves + expanded movement library
+- Net zero stage displacement (dx = 0, dy = 0) with stage exploration
+- Auto-extracted kinematic features (duration, angular velocity, amplitude, pause holds)
+  matched against real audio bar energy & beat dips (< 120s limit)
 """
 
 import sys
 import os
+import re
+import ast
 import json
 import heapq
-import re
 import math
 import audio_analyzer
 
-# Full mapping of PDDL symbols to robot position files
-MOVE_MAP = {
-    "p1_standinit": "14-StandInit.py",
-    "p2_armsopening": "4-Arms_opening.py",
-    "p3_crouch": "6-Crouch.py",
-    "p4_sit": "16-Sit.py",
-    "p5_sitrelax": "17-SitRelax.py",
-    "p6_stand": "11-Stand.py",
-    "m_handgun": "1-Rotation_handgun_object.py",
-    "m_rightarm": "2-Right_arm.py",
-    "m_doublemovement": "3-Double_movement.py",
-    "m_unionarms": "5-Union_arms.py",
-    "m_forward": "7-Move_forward.py",
-    "m_backward": "8-Move_backward.py",
-    "m_diagleft": "9-Diagonal_left.py",
-    "m_diagright": "10-Diagonal_right.py",
-    "m_footr": "12-Rotation_foot_RLeg.py",
-    "m_footl": "13-Rotation_foot_LLeg.py",
-    "m_standzero": "15-StandZero.py",
-    "m_whip": "whip.py",
-    "m_fingersnap": "finger_snap.py",
-    "m_highclap": "high_clap.py",
-    "m_proud": "proud.py",
-    "m_wipeforehead": "WipeForehead.py",
-    "m_hello": "Hello.py",
-    "m_dab": "dab.py",
-    "m_newdance": "new_dance.py",
-    "m_guitar": "guitar.py",
-    "m_sitmood": "sitting_mood.py",
-    "m_sithandkiss": "sitting_handkiss.py",
-    "m_sitwavess": "sitting_wavess.py",
-    "m_voneyes": "VOnEyes.py",
-    "m_disco": "Disco.py",
-    "m_newhiphop": "new_hiphop.py",
-    "m_speedy": "new_speedy.py",
-    "m_superman": "new_superman.py",
-    "m_thriller": "ThrillerClap.py",
-    "m_thrillersnap": "ThrillerSnapSnap.py",
-   "m_thrillersideways": "ThrillerArmSideways.py",
-   "m_dancemove": "DanceMove.py",
-   "m_astleysway": "astley_arm_sway.py",
-   "m_comp_diagleft_snap": "composite_diagleft_snap.py",
-   "m_comp_diagright_sway": "composite_diagright_sway.py",
-    "m_comp_forward_groove": "composite_forward_groove.py",
-    "m_comp_backward_groove": "composite_backward_groove.py",
-    "m_sprinkler": "sprinkler.py",
-    "m_workout": "workout.py",
-    "m_headbang": "Headbang.py",
-    "m_saxophone": "Saxophone.py",
-    "m_motif_astley": "motif_astley_groove.py",
-    "m_motif_disco": "motif_disco_point.py",
-    "m_motif_clap": "motif_pop_clap.py",
-    "m_motif_sprinkler": "motif_sprinkler.py",
-    "m_motif_snap": "motif_finger_snap.py",
-    "m_motif_wave": "motif_dance_wave.py",
-    "m_motif_sitkiss": "motif_sitting_kiss.py",
-    "m_motif_drop": "motif_beat_drop.py",
-    "m_motif_pause": "motif_groove_pause.py",
+INITIAL_SPEC = {
+    "file": "14-StandInit.py", "pre": "Standing", "post": "Standing", "fallback_dur": 0.5
+}
+GOAL_SPEC = {
+    "file": "6-Crouch.py", "pre": "Standing", "post": "Crouch", "fallback_dur": 1.8
 }
 
-FILE_TO_SYMBOL = {v: k for k, v in MOVE_MAP.items()}
-
-# Comprehensive Candidate Move Library with Survey Attributes and Physical Preconditions
-# No hardcoded phases: any standing move is eligible while standing, any sitting move while sitting!
-CANDIDATE_MOVES = {
-    # -------------------------------------------------------------------------
-    # Composite Layered Moves: Locomotion + Upper Dance Blended (Slide 11 & 15)
-    # Energy: 3.8-4.5 (walking cadence + arm motion) | Pub: 5.0 | Hum: 5.0
-    # -------------------------------------------------------------------------
-    "composite_diagleft_snap.py": {
-        "dur": 4.24, "energy": 3.8, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": 1, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "composite_diagright_sway.py": {
-        "dur": 4.24, "energy": 4.5, "pub": 5.0, "hum": 5.0, "dx": 0, "dy": -1, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "composite_forward_groove.py": {
-        "dur": 4.24, "energy": 4.2, "pub": 4.8, "hum": 4.8, "dx": 1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "composite_backward_groove.py": {
-        "dur": 4.24, "energy": 4.0, "pub": 4.8, "hum": 4.8, "dx": -1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
-    },
-
-    # -------------------------------------------------------------------------
-    # Beat-Quantized Pop Dance Motifs (113.3 BPM, 1-2 bars, zero leg instability)
-    # High-energy, fluid, music-synchronized 80s pop choreography hooks
-    # -------------------------------------------------------------------------
-    "motif_astley_groove.py": {
-        "dur": 4.24, "energy": 4.6, "pub": 5.6, "hum": 5.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
-    },
-    "motif_disco_point.py": {
-        "dur": 4.24, "energy": 4.7, "pub": 5.5, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
-    },
-    "motif_pop_clap.py": {
-        "dur": 2.12, "energy": 4.6, "pub": 5.6, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
-    },
-    "motif_beat_drop.py": {
-        "dur": 2.12, "energy": 4.8, "pub": 5.5, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
-    },
-    "motif_groove_pause.py": {
-        "dur": 2.12, "energy": 2.9, "pub": 5.1, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
-    },
-    "motif_sprinkler.py": {
-        "dur": 4.24, "energy": 4.8, "pub": 5.6, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "motif_finger_snap.py": {
-        "dur": 4.24, "energy": 3.8, "pub": 5.2, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False, "pause": True
-    },
-    "motif_dance_wave.py": {
-        "dur": 4.24, "energy": 4.5, "pub": 5.5, "hum": 5.4, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "motif_sitting_kiss.py": {
-        "dur": 4.24, "energy": 2.2, "pub": 5.2, "hum": 5.5, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False, "pause": True
-    },
-
-    # -------------------------------------------------------------------------
-    # Legacy High-Energy Dances
-    # -------------------------------------------------------------------------
-    "whip.py": {
-        "dur": 2.24, "energy": 5.0, "pub": 4.4, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "new_speedy.py": {
-        "dur": 4.60, "energy": 4.8, "pub": 5.2, "hum": 4.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "new_hiphop.py": {
-        "dur": 5.32, "energy": 4.5, "pub": 4.8, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "Disco.py": {
-        "dur": 5.00, "energy": 4.2, "pub": 4.8, "hum": 4.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "dab.py": {
-        "dur": 4.64, "energy": 4.2, "pub": 5.0, "hum": 4.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-
-    # -------------------------------------------------------------------------
-    # Medium-Energy Rhythmic & Thematic Gestures (vel: 0.3 - 0.5 rad/s)
-    # Calibrated for Verse grooves & narrative storytelling
-    # -------------------------------------------------------------------------
-    "high_clap.py": {
-        "dur": 5.60, "energy": 3.8, "pub": 4.5, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "ThrillerClap.py": {
-        "dur": 5.00, "energy": 4.0, "pub": 4.6, "hum": 4.8, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "ThrillerSnapSnap.py": {
-        "dur": 5.00, "energy": 3.8, "pub": 4.4, "hum": 4.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "new_dance.py": {
-        "dur": 3.24, "energy": 3.2, "pub": 3.8, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-
-    # -------------------------------------------------------------------------
-    # Low-Energy / Static Gestures (vel: < 0.3 rad/s, amp: < 1.5 rad)
-    # High penalty during high energy sections, acceptable in intro/outro
-    # -------------------------------------------------------------------------
-    "proud.py": {
-        "dur": 4.20, "energy": 2.0, "pub": 3.0, "hum": 3.6, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "VOnEyes.py": {
-        "dur": 8.00, "energy": 2.2, "pub": 3.5, "hum": 4.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "WipeForehead.py": {
-        "dur": 7.80, "energy": 1.8, "pub": 2.6, "hum": 3.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "Hello.py": {
-        "dur": 7.50, "energy": 1.8, "pub": 2.4, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "1-Rotation_handgun_object.py": {
-        "dur": 5.00, "energy": 1.4, "pub": 2.0, "hum": 2.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "2-Right_arm.py": {
-        "dur": 4.50, "energy": 1.6, "pub": 2.0, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "5-Union_arms.py": {
-        "dur": 4.50, "energy": 1.8, "pub": 2.2, "hum": 2.5, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "15-StandZero.py": {
-        "dur": 3.00, "energy": 1.0, "pub": 1.0, "hum": 1.0, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-
-    # -------------------------------------------------------------------------
-    # Pure Locomotion (Unlayered fallback moves)
-    # Low engagement without arms
-    # -------------------------------------------------------------------------
-    "7-Move_forward.py": {
-        "dur": 4.20, "energy": 2.8, "pub": 2.5, "hum": 2.0, "dx": 1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "8-Move_backward.py": {
-        "dur": 4.20, "energy": 2.6, "pub": 2.5, "hum": 2.0, "dx": -1, "dy": 0, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "9-Diagonal_left.py": {
-        "dur": 3.50, "energy": 2.8, "pub": 2.5, "hum": 2.0, "dx": 0, "dy": 1, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "10-Diagonal_right.py": {
-        "dur": 3.60, "energy": 2.8, "pub": 2.5, "hum": 2.0, "dx": 0, "dy": -1, "pre": "Standing", "post": "Standing", "disp": True
-    },
-    "12-Rotation_foot_RLeg.py": {
-        "dur": 4.50, "energy": 2.2, "pub": 2.0, "hum": 2.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-    "13-Rotation_foot_LLeg.py": {
-        "dur": 4.50, "energy": 2.2, "pub": 2.0, "hum": 2.2, "dx": 0, "dy": 0, "pre": "Standing", "post": "Standing", "disp": False
-    },
-
-    # -------------------------------------------------------------------------
-    # Floor / Sitting Choreography (Precondition: Sitting)
-    # -------------------------------------------------------------------------
-    "sitting_mood.py": {
-        "dur": 4.20, "energy": 4.2, "pub": 4.4, "hum": 4.5, "dx": 0, "dy": 0, "pre": "Sitting", "post": "Sitting", "disp": False
-    },
-}
-
-# The 6 Mandatory Positions (P1..P6) with calibrated synced wall-clock durations
-MANDATORY_MOVES = [
-    ("14-StandInit.py", "p1_standinit", 0, "Standing", "Standing", 0.5),
-    ("4-Arms_opening.py", "p2_armsopening", 1, "Standing", "Standing", 4.0),
-    ("6-Crouch.py", "p3_crouch", 2, "Standing", "Crouch", 2.2),
-    ("16-Sit.py", "p4_sit", 3, "Crouch", "Sitting", 2.5),
-    ("17-SitRelax.py", "p5_sitrelax", 4, "Sitting", "Sitting", 2.5),
-    ("11-Stand.py", "p6_stand", 5, "Sitting", "Standing", 4.0),
+# 6 Mandatory Positions from Competition Slide 13 (index -> bitmask 1 << i)
+MANDATORY_SPECS = [
+    {"file": "16-Sit.py", "pre": "Standing", "post": "Sitting", "center_only": True, "fallback_dur": 3.5},
+    {"file": "17-SitRelax.py", "pre": "Sitting", "post": "Sitting", "center_only": False, "fallback_dur": 2.5},
+    {"file": "11-Stand.py", "pre": "Sitting", "post": "Standing", "center_only": False, "fallback_dur": 3.3},
+    {"file": "WipeForehead.py", "pre": "Standing", "post": "Standing", "center_only": False, "fallback_dur": 6.0},
+    {"file": "Hello.py", "pre": "Standing", "post": "Standing", "center_only": False, "fallback_dur": 5.6},
+    {"file": "15-StandZero.py", "pre": "Standing", "post": "Standing", "center_only": False, "fallback_dur": 1.4},
 ]
 
-_REAL_ENERGY_PROFILE = None
+# Intermediate Candidate Pool: Official Slide 16/17 moves + expanded dance/motif library
+INTERMEDIATE_SPECS = {
+    # Official Slide 16/17 positions
+    "3-Double_movement.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": True, "fallback_dur": 4.0},
+    "4-Arms_opening.py":            {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": True, "fallback_dur": 4.0},
+    "7-Move_forward.py":            {"pre": "Standing", "post": "Standing", "dx": 1, "dy": 0, "official": True, "fallback_dur": 3.5},
+    "8-Move_backward.py":           {"pre": "Standing", "post": "Standing", "dx": -1, "dy": 0, "official": True, "fallback_dur": 3.5},
+    "9-Diagonal_left.py":           {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 1, "official": True, "fallback_dur": 3.0},
+    "10-Diagonal_right.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": -1, "official": True, "fallback_dur": 3.0},
+    "sprinkler.py":                 {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": True, "fallback_dur": 10.4},
+
+    # Expanded stage locomotion composites
+    "composite_diagleft_snap.py":   {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 1, "official": False, "fallback_dur": 4.24},
+    "composite_diagright_sway.py":  {"pre": "Standing", "post": "Standing", "dx": 0, "dy": -1, "official": False, "fallback_dur": 4.24},
+    "composite_forward_groove.py":  {"pre": "Standing", "post": "Standing", "dx": 1, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "composite_backward_groove.py": {"pre": "Standing", "post": "Standing", "dx": -1, "dy": 0, "official": False, "fallback_dur": 4.24},
+
+    # Expanded beat-quantized standing motifs & full-body dances
+    "motif_hip_grooves.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "motif_knee_bounce_step.py":    {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 2.12},
+    "motif_astley_groove.py":       {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "motif_disco_point.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "motif_beat_drop.py":           {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 2.12},
+    "motif_groove_pause.py":        {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 2.12},
+    "motif_pop_clap.py":            {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 2.12},
+    "motif_sprinkler.py":           {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "motif_finger_snap.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "motif_dance_wave.py":          {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "Disco.py":                     {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 5.0},
+    "new_hiphop.py":                {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 5.32},
+    "new_speedy.py":                {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.60},
+    "new_dance.py":                 {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 3.24},
+    "dab.py":                       {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.64},
+    "ThrillerClap.py":              {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 5.0},
+
+    # Sitting moves
+    "motif_sitting_kiss.py":        {"pre": "Sitting", "post": "Sitting", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
+    "sitting_mood.py":              {"pre": "Sitting", "post": "Sitting", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.20},
+}
+
+_STRIPPED_LEG_FILES = set(["finger_snap.py", "DanceMove.py"])
+
+
+def _parse_trajectories(txt):
+    """Extracts (joint_names, times_lists, keys_lists) from Choregraphe exports and motif/composite scripts."""
+    # Case A: names.append(...) + times.append([...]) and keys.append([...])
+    n_app = re.findall(r'names\.append\(["\']([^"\']+)["\']\)', txt)
+    t_app = re.findall(r"times\.append\((\[[^\n]+\])\)", txt)
+    k_app = re.findall(r"keys\.append\((\[[^\n]+\])\)", txt)
+    if t_app and k_app:
+        times_out, keys_out = [], []
+        for ts, ks in zip(t_app, k_app):
+            tl = ast.literal_eval(ts)
+            kl_raw = ast.literal_eval(ks)
+            kl = [float(el[0]) if isinstance(el, list) else float(el) for el in kl_raw]
+            times_out.append([float(x) for x in tl])
+            keys_out.append(kl)
+        jnames = n_app if len(n_app) == len(times_out) else ["j%d" % i for i in range(len(times_out))]
+        return jnames, times_out, keys_out
+
+    # Case B: top-level names = [...], times = [[...]], keys = [[...]]
+    m_n = re.search(r"^names\s*=\s*(\[[^\n]+\])\s*$", txt, re.M)
+    m_t = re.search(r"^times\s*=\s*(\[\[.*?\]\])\s*$", txt, re.M | re.S)
+    m_k = re.search(r"^keys\s*=\s*(\[\[.*?\]\])\s*$", txt, re.M | re.S)
+    if m_t and m_k:
+        times_out = [[float(x) for x in tl] for tl in ast.literal_eval(m_t.group(1))]
+        keys_out = [[float(x) for x in kl] for kl in ast.literal_eval(m_k.group(1))]
+        jnames = ast.literal_eval(m_n.group(1)) if m_n else ["j%d" % i for i in range(len(times_out))]
+        return jnames, times_out, keys_out
+
+    # Case C: motif/composite names = [...] + t_grid = [...] or times = [[...]] inside main() + keys = [...]
+    m_names = re.search(r"^[ \t]*names\s*=\s*\[", txt, re.M)
+    m_start = re.search(r"^[ \t]*(?:t_grid|times)\s*=", txt, re.M)
+    m_end = re.search(r"motion\.angleInterpolation", txt)
+    start_pos = m_names.start() if (m_names and m_start and m_names.start() < m_start.start()) else (m_start.start() if m_start else -1)
+    if start_pos >= 0 and m_end and m_end.start() > start_pos:
+        block_lines = txt[start_pos:m_end.start()].splitlines()
+        indent = len(block_lines[0]) - len(block_lines[0].lstrip())
+        cleaned = "\n".join(line[indent:] if len(line) >= indent else line for line in block_lines)
+        cleaned = re.sub(r"\ntry:\s*$", "", cleaned.rstrip())
+        env = {"DEG": math.pi / 180.0, "list": list, "round": round, "range": range}
+        ns = dict(env)
+        ns["__builtins__"] = env
+        ns["names"] = ["j%d" % i for i in range(24)]
+        try:
+            exec(compile(cleaned, "<traj>", "exec"), ns, ns)
+        except Exception:
+            return [], [], []
+        if isinstance(ns.get("times"), list) and isinstance(ns.get("keys"), list):
+            jnames = ns["names"] if len(ns.get("names", [])) == len(ns["keys"]) else ["j%d" % i for i in range(len(ns["keys"]))]
+            return jnames, ns["times"], ns["keys"]
+    return [], [], []
+
+
+def extract_move_features(move_file, spec, positions_dir="RobotPositions"):
+    """Computes physical kinematic attributes automatically from RobotPositions/<move_file>."""
+    path = os.path.join(positions_dir, move_file)
+    txt = ""
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            txt = f.read()
+
+    has_walk = ("moveTo" in txt)
+    leg_active = has_walk or (
+        move_file not in _STRIPPED_LEG_FILES
+        and any(k in txt for k in ["HipPitch", "KneePitch", "AnklePitch", "HipRoll", "RLeg", "LLeg"])
+    )
+
+    jnames, times_lists, keys_lists = _parse_trajectories(txt)
+    start_pose, end_pose = {}, {}
+    peak_vel = 0.0
+    if times_lists and keys_lists:
+        max_t = max(max(tl) for tl in times_lists if tl)
+        dur = round(max_t + (1.0 if "goToPosture" in txt else 0.0), 2)
+
+        joint_speeds, joint_amps = [], []
+        step_spans = {}
+        for jn, tl, kl in zip(jnames, times_lists, keys_lists):
+            if kl:
+                start_pose[jn] = float(kl[0])
+                end_pose[jn] = float(kl[-1])
+            if len(tl) < 2 or len(kl) < 2:
+                continue
+            amp = max(kl) - min(kl)
+            joint_amps.append(amp)
+            span_t = max(tl[-1] - tl[0], 0.1)
+            path_len = sum(abs(kl[i] - kl[i - 1]) for i in range(1, min(len(tl), len(kl))))
+            joint_speeds.append(path_len / span_t)
+            for i in range(1, min(len(tl), len(kl))):
+                dt = tl[i] - tl[i - 1]
+                peak_vel = max(peak_vel, abs(kl[i] - kl[i - 1]) / max(dt, 0.04))
+                if dt >= 0.40:
+                    key = (round(tl[i - 1], 2), round(tl[i], 2))
+                    step_spans[key] = max(step_spans.get(key, 0.0), abs(kl[i] - kl[i - 1]))
+
+        top_n = max(1, len(joint_speeds) // 2)
+        raw_vel = sum(sorted(joint_speeds)[-top_n:]) / float(top_n)
+        raw_amp = sum(sorted(joint_amps)[-top_n:]) / float(top_n)
+        has_pause = any(max_dk < 0.05 for max_dk in step_spans.values())
+    else:
+        tvar, block_sum = None, 0.0
+        for line in txt.replace("\r", "\n").splitlines():
+            ls = line.strip()
+            if not ls or ls.startswith("#"):
+                continue
+            mt = re.match(r"timeLists?\s*=\s*([0-9.]+)", ls)
+            if mt:
+                tvar = float(mt.group(1))
+            if "angleInterpolation(" in ls and ".post." not in ls:
+                ma = re.search(r"angleInterpolation\([^,]+,[^,]+,\s*([0-9.]+)", ls)
+                if ma:
+                    block_sum += float(ma.group(1))
+                elif tvar is not None:
+                    block_sum += tvar
+        set_cnt = txt.count("setAngles(")
+        dur = round(block_sum + 0.25 * set_cnt, 2) if block_sum > 0.0 else float(spec["fallback_dur"])
+        if has_walk:
+            raw_vel, raw_amp = 0.28, 0.45
+        elif "angleInterpolation" in txt or "setAngles" in txt:
+            calls = txt.count("angleInterpolation") + txt.count("setAngles")
+            raw_vel = min(0.45, 0.32 + 0.02 * calls)
+            raw_amp = 0.70
+        else:
+            raw_vel, raw_amp = 0.25, 0.60
+        has_pause = False
+
+    feat = dict(spec)
+    feat["file"] = move_file
+    feat["dur"] = dur
+    feat["raw_vel"] = round(raw_vel, 4)
+    feat["raw_amp"] = round(raw_amp, 4)
+    feat["peak_vel"] = round(peak_vel, 2)
+    feat["start_pose"] = start_pose
+    feat["end_pose"] = end_pose
+    feat["has_pause"] = has_pause
+    feat["leg_active"] = leg_active
+    feat["has_walk"] = has_walk
+    return feat
+
+
+def _linear_norm(val, lo, hi, out_lo, out_hi):
+    if hi <= lo:
+        return (out_lo + out_hi) / 2.0
+    ratio = max(0.0, min(1.0, (val - lo) / (hi - lo)))
+    return round(out_lo + ratio * (out_hi - out_lo), 2)
+
+
+def build_move_library(positions_dir="RobotPositions"):
+    """Extracts and normalizes physical features across all initial, mandatory, intermediate, and goal moves."""
+    init_feat = extract_move_features(INITIAL_SPEC["file"], INITIAL_SPEC, positions_dir)
+    goal_feat = extract_move_features(GOAL_SPEC["file"], GOAL_SPEC, positions_dir)
+    mand_list = [extract_move_features(s["file"], s, positions_dir) for s in MANDATORY_SPECS]
+    inter_dict = {f: extract_move_features(f, s, positions_dir) for f, s in INTERMEDIATE_SPECS.items()}
+
+    all_feats = [init_feat, goal_feat] + mand_list + list(inter_dict.values())
+    vels = sorted(f["raw_vel"] for f in all_feats)
+    amps = sorted(f["raw_amp"] for f in all_feats)
+    v_lo, v_hi = vels[0], vels[int(0.90 * (len(vels) - 1))]
+    a_lo, a_hi = amps[0], amps[int(0.90 * (len(amps) - 1))]
+
+    for f in all_feats:
+        f["energy"] = _linear_norm(f["raw_vel"], v_lo, v_hi, 1.4, 5.0)
+        f["expressiveness"] = _linear_norm(f["raw_amp"], a_lo, a_hi, 1.5, 5.0)
+
+    return init_feat, goal_feat, mand_list, inter_dict
+
+
 _REAL_BAR_FEATURES = None
+_REAL_ENERGY_PROFILE = None
 _REAL_PHASE = 0.21
 _REAL_BAR_DUR = 2.11827
 _REAL_SONG_DURATION = 120.0
+
 
 def load_real_energy_profile(song_path=None):
     """Loads per-bar energy & pause features from WAV (or energy profile fallback)."""
@@ -274,307 +274,259 @@ def load_real_energy_profile(song_path=None):
                 return data
     return None
 
+
 def get_music_features(t_sec):
-    """Returns (target_energy, has_pause) at real 1:1 song timestamp t_sec."""
+    """Returns (target_energy, has_pause, section_id) directly from extracted audio bars/profile."""
     if _REAL_BAR_FEATURES:
         idx = int(max(0.0, t_sec - _REAL_PHASE) / max(_REAL_BAR_DUR, 0.1))
         idx = max(0, min(len(_REAL_BAR_FEATURES) - 1, idx))
         b = _REAL_BAR_FEATURES[idx]
-        return b["energy"], b["has_pause"]
+        return b["energy"], b["has_pause"], b.get("section", 0)
     if _REAL_ENERGY_PROFILE:
         idx = int((t_sec / max(_REAL_SONG_DURATION, 1.0)) * len(_REAL_ENERGY_PROFILE))
         idx = max(0, min(len(_REAL_ENERGY_PROFILE) - 1, idx))
-        return _REAL_ENERGY_PROFILE[idx], False
-    if t_sec < 8.5:
-        return 2.6, (t_sec < 2.2)
-    elif t_sec < 26.0:
-        return 4.0, False
-    elif t_sec < 50.0:
-        return 2.7, False
-    elif t_sec < 85.0:
-        return 4.7, True
-    else:
-        return 2.4, False
+        return _REAL_ENERGY_PROFILE[idx], False, 0
+    return 3.0, False, 0
 
-def get_target_music_energy(t_sec):
-    return get_music_features(t_sec)[0]
 
-class StripsPlanner(object):
-    """Classical forward state-space A* STRIPS planner with multi-objective survey heuristic."""
-    def __init__(self, max_duration=98.0, bpm=113.3):
+class ChoreographyPlanner(object):
+    """Forward state-space A* planner optimizing extracted kinematics & audio alignment."""
+
+    def __init__(self, init_feat, goal_feat, mandatory_lib, intermediate_lib,
+                 max_duration=115.0, bpm=113.3, music_fn=None):
+        self.init_feat = init_feat
+        self.goal_feat = goal_feat
+        self.mandatory = mandatory_lib
+        self.intermediate = intermediate_lib
         self.max_duration = max_duration
         self.bpm = bpm
-        self.bar_dur = (60.0 / bpm) * 4.0 # ~2.12s per bar
+        self.bar_dur = (60.0 / bpm) * 4.0
+        self.music_fn = music_fn or get_music_features
+        self._feat_by_file = {self.init_feat["file"]: self.init_feat, self.goal_feat["file"]: self.goal_feat}
+        for m in self.mandatory:
+            self._feat_by_file[m["file"]] = m
+        self._feat_by_file.update(self.intermediate)
+
+    def _pose_gap(self, prev_file, next_file):
+        p_end = self._feat_by_file.get(prev_file, {}).get("end_pose", {})
+        n_start = self._feat_by_file.get(next_file, {}).get("start_pose", {})
+        if not p_end or not n_start:
+            return 0.25
+        shared = [abs(p_end[j] - n_start[j]) for j in p_end if j in n_start]
+        return (sum(shared) / float(len(shared))) if shared else 0.25
+
+    def _query_music(self, t_sec):
+        res = self.music_fn(t_sec)
+        if len(res) >= 3:
+            return res[0], res[1], res[2]
+        return res[0], res[1], 0
 
     def solve(self):
-        """Finds the optimal sequence of mandatory and intermediate moves via A* forward search."""
-        p1_file, p1_sym, _, _, _, p1_dur = MANDATORY_MOVES[0]
-        start_hist = ((p1_file, "MANDATORY", p1_sym, p1_dur, 0),)
-        # state: (time, phase_idx, posture, x, y, used_tuple, hist, ph_count, visited_non_center)
-        start_state = (p1_dur, 1, "Standing", 0, 0, (), start_hist, 0, False)
-        pq = []
-        heapq.heappush(pq, (p1_dur, p1_dur, start_state))
+        init_dur = self.init_feat["dur"]
+        crouch_dur = self.goal_feat["dur"]
+        _, _, init_sec = self._query_music(0.0)
+        start_hist = ((self.init_feat["file"], "INITIAL", init_dur, False, init_sec),)
+        # state: (t, mand_mask, pos, x, y, off_cnt, visited_stage, used_tuple, hist)
+        start_state = (init_dur, 0, "Standing", 0, 0, 0, False, (), start_hist)
+        pq = [(0.0, 0.0, start_state)]
         visited = {}
-        best_plan = None
         nodes = 0
 
-        while pq and nodes < 80000:
-            f, g, (t, ph, pos, x, y, used, hist, ph_cnt, visited_stage) = heapq.heappop(pq)
+        while pq and nodes < 120000:
+            f, g, (t, mand_mask, pos, x, y, off_cnt, visited_stage, used, hist) = heapq.heappop(pq)
             nodes += 1
 
-            state_key = (ph, pos, x, y, visited_stage, round(t, 0))
+            last_mand = bool(hist and hist[-1][1] == "MANDATORY")
+            state_key = (mand_mask, pos, x, y, min(off_cnt, 5), visited_stage, last_mand, int(round(t / 2.0)))
             if state_key in visited and visited[state_key] <= f:
                 continue
             visited[state_key] = f
 
-            # Goal test: all 6 mandatory phases complete, returned to center (0,0), >= 5 intermediate moves,
-            # visited surrounding stage space, and performed chorus finale in Phase 6 (within <120s real-time budget)
-            if ph == 6 and ph_cnt >= 5 and t >= 98.0 and x == 0 and y == 0 and len(used) >= 10 and visited_stage:
-                best_plan = (t, g, hist)
-                break
+            # Goal test: all 6 mandatory done, Standing at center, stage explored, >=5 official moves, >=109s
+            if (mand_mask == 63 and pos == "Standing" and x == 0 and y == 0
+                    and visited_stage and off_cnt >= 5 and t >= 109.0 and t + crouch_dur <= self.max_duration):
+                _, _, goal_sec = self._query_music(t)
+                goal_hist = hist + ((self.goal_feat["file"], "GOAL", crouch_dur, True, goal_sec),)
+                return (t + crouch_dur, g, goal_hist, nodes)
 
-            # Action A: Advance mandatory phase (P1..P6)
-            if 0 < ph < 6:
-                m_file, m_sym, m_ph, pre_pos, post_pos, m_dur = MANDATORY_MOVES[ph]
-                if pos == pre_pos:
-                    if ph == 1 and ph_cnt < 2:
-                        pass # Require at least 2 intro groove moves in Phase 1 before Arms_opening
-                    elif ph == 4 and ph_cnt == 0:
-                        pass # Require floor dance before SitRelax
-                    elif m_file == "6-Crouch.py" and (x != 0 or y != 0):
-                        pass # Must return to center before floor drop
-                    else:
-                        new_t = t + m_dur
-                        if new_t <= self.max_duration:
-                            floor_penalty = 0.0
-                            if m_file == "6-Crouch.py" and (get_music_features(t)[0] > 3.6 or t < 26.0 or t > 38.0):
-                                floor_penalty = 30.0
-                            new_hist = hist + ((m_file, "MANDATORY", m_sym, m_dur, ph),)
-                            new_g = g + m_dur + floor_penalty
-                            h_rem = (6 - (ph + 1)) * 3.0 + (abs(x) + abs(y)) * 4.0
-                            heapq.heappush(pq, (new_g + h_rem - (ph + 1) * 6.0, new_g, (new_t, ph + 1, post_pos, x, y, used, new_hist, 0, visited_stage)))
+            # Admissible time-budget pruning
+            rem_mand_dur = sum(m["dur"] for i, m in enumerate(self.mandatory) if not (mand_mask & (1 << i)))
+            if t + rem_mand_dur + crouch_dur > self.max_duration:
+                continue
 
-            # Action B: Execute an intermediate move from the candidate pool
-            max_ph_cnt = 14 if ph == 6 else 6
-            if ph_cnt < max_ph_cnt and len(used) < 28 and t < (self.max_duration - 2.0):
-                for m_file, info in CANDIDATE_MOVES.items():
-                    # Never repeat the exact same move twice in a row (keeps choreography dynamic & non-robotic)
-                    if hist and hist[-1][0] == m_file:
-                        continue
-                    if info["dur"] <= 2.5:
-                        max_plays = 3
-                    elif any(m_file.startswith(p) for p in ["motif_", "composite_"]):
-                        max_plays = 2
-                    else:
-                        max_plays = 1
-                    if used.count(m_file) >= max_plays:
-                        continue
-                    if info["pre"] == pos:
-                        new_x = x + info["dx"]
-                        new_y = y + info["dy"]
-                        # Keep robot within stage grid [-1, 1]
-                        if abs(new_x) > 1 or abs(new_y) > 1:
-                            continue
-                        # If in final phase, require step that moves toward center (0, 0)
-                        if ph == 6 and (abs(new_x) > abs(x) or abs(new_y) > abs(y)):
-                            continue
+            target_e, is_pause, sec_id = self._query_music(t)
 
-                        new_t = t + info["dur"]
-                        if new_t <= self.max_duration:
-                            # Multi-objective survey scoring:
-                            pub = info["pub"]
-                            hum = info["hum"]
-                            target_e, is_pause = get_music_features(t)
-                            e_err = abs(info["energy"] - target_e)
-                            beat_err = abs((info["dur"] % self.bar_dur) - (self.bar_dur / 2.0))
-                            space_bonus = 3.5 if info["disp"] else 0.0
-                            pause_bonus = 2.8 if (is_pause and info.get("pause", False)) else 0.0
-                            short_variety_bonus = 1.5 if (info["dur"] <= 2.5 and hist and hist[-1][3] > 3.0) else 0.0
+            # Action A: Execute any remaining Mandatory position (unordered bitmask)
+            for i, m in enumerate(self.mandatory):
+                if mand_mask & (1 << i):
+                    continue
+                if m["pre"] != pos:
+                    continue
+                if pos == "Standing" and last_mand:
+                    continue
+                if m.get("center_only") and (x != 0 or y != 0):
+                    continue
+                # 11-Stand (idx 2) cannot run before 17-SitRelax (idx 1) since 16-Sit is single-use
+                if i == 2 and not (mand_mask & (1 << 1)):
+                    continue
 
-                            # Duration-normalized regret so 1-bar (2.12s) & 2-bar (4.24s) moves compete fairly
-                            quality = (pub * 3.0) + (hum * 3.0) + space_bonus + pause_bonus + short_variety_bonus - (e_err * 2.5) - (beat_err * 1.5)
-                            cost_delta = max(0.25, (38.0 - quality) * (info["dur"] / 4.24))
-                            new_g = g + cost_delta
-                            new_used = used + (m_file,)
-                            m_sym = FILE_TO_SYMBOL.get(m_file, "m_custom")
-                            new_hist = hist + ((m_file, "INTERMEDIATE", m_sym, info["dur"], ph),)
-                            new_visited_stage = visited_stage or (new_x != 0 or new_y != 0)
+                new_t = t + m["dur"]
+                new_mask = mand_mask | (1 << i)
+                rem_after = sum(self.mandatory[j]["dur"] for j in range(len(self.mandatory)) if not (new_mask & (1 << j)))
+                if new_t + rem_after + crouch_dur > self.max_duration:
+                    continue
 
-                            # Admissible heuristic estimating remaining cost
-                            h_rem = (6 - ph) * 5.0 + (abs(new_x) + abs(new_y)) * 6.0 + (0 if new_visited_stage else 4.0)
-                            heapq.heappush(pq, (new_g + h_rem - ph * 5.0, new_g, (new_t, ph, info["post"], new_x, new_y, new_used, new_hist, ph_cnt + 1, new_visited_stage)))
+                e_err = abs(m["energy"] - target_e)
+                cost_delta = max(0.3, (2.5 + e_err * 3.0) * (m["dur"] / 4.24))
+                new_g = g + cost_delta
+                new_pos = m["post"]
+                new_hist = hist + ((m["file"], "MANDATORY", m["dur"], True, sec_id),)
+                h = self._heuristic(new_t, new_mask, new_pos, x, y, off_cnt, visited_stage)
+                heapq.heappush(pq, (new_g + h, new_g, (new_t, new_mask, new_pos, x, y, off_cnt, visited_stage, used, new_hist)))
 
-        return best_plan
+            # Action B: Execute any Intermediate move
+            same_sec_moves = set(h_item[0] for h_item in hist[:-1] if h_item[1] == "INTERMEDIATE" and h_item[4] == sec_id)
+            for m_file, info in self.intermediate.items():
+                if info["pre"] != pos:
+                    continue
+                if hist and hist[-1][0] == m_file:
+                    continue
+                if (pos == "Standing" and not info["leg_active"]
+                        and hist and hist[-1][1] == "INTERMEDIATE"
+                        and not self.intermediate.get(hist[-1][0], {}).get("leg_active", True)):
+                    continue
 
-def write_problem_pddl(plan_history, output_path="problem.pddl"):
-    """Exports formal STRIPS PDDL problem instance reflecting the search space and solution."""
-    seen_syms = set()
-    used_symbols = []
-    for item in plan_history:
-        if item[1] == "INTERMEDIATE" and item[2] not in seen_syms:
-            seen_syms.add(item[2])
-            used_symbols.append(item[2])
-    lines = [
-        "(define (problem nao_choreography_problem)",
-        "  (:domain nao_choreography)",
-        "  (:objects",
-        "    Standing Sitting Crouch - posture",
-        "    pos_center pos_north pos_south pos_west pos_east - loc",
-        "    phase0 phase1 phase2 phase3 phase4 phase5 phase6 - phase",
-        "    p1_standinit p2_armsopening p3_crouch p4_sit p5_sitrelax p6_stand - move",
-        "    %s - move" % (" ".join(used_symbols)),
-        "  )",
-        "",
-        "  (:init",
-        "    (current_phase phase0)",
-        "    (at_posture Standing)",
-        "    (at_loc pos_center)",
-        "",
-        "    (next_phase phase0 phase1)",
-        "    (next_phase phase1 phase2)",
-        "    (next_phase phase2 phase3)",
-        "    (next_phase phase3 phase4)",
-        "    (next_phase phase4 phase5)",
-        "    (next_phase phase5 phase6)",
-        "",
-        "    ;; Mandatory assignments (P1..P6)",
-        "    (is_mandatory p1_standinit phase0)",
-        "    (valid_pre p1_standinit Standing)",
-        "    (valid_post p1_standinit Standing)",
-        "",
-        "    (is_mandatory p2_armsopening phase1)",
-        "    (valid_pre p2_armsopening Standing)",
-        "    (valid_post p2_armsopening Standing)",
-        "",
-        "    (is_mandatory p3_crouch phase2)",
-        "    (valid_pre p3_crouch Standing)",
-        "    (valid_post p3_crouch Crouch)",
-        "",
-        "    (is_mandatory p4_sit phase3)",
-        "    (valid_pre p4_sit Crouch)",
-        "    (valid_post p4_sit Sitting)",
-        "",
-        "    (is_mandatory p5_sitrelax phase4)",
-        "    (valid_pre p5_sitrelax Sitting)",
-        "    (valid_post p5_sitrelax Sitting)",
-        "",
-        "    (is_mandatory p6_stand phase5)",
-        "    (valid_pre p6_stand Sitting)",
-        "    (valid_post p6_stand Standing)",
-        "",
-        "    ;; Intermediate moves preconditions and displacement effects",
-    ]
-    for item in plan_history:
-        if item[1] == "INTERMEDIATE":
-            m_file, _, sym, _, _ = item
-            info = CANDIDATE_MOVES.get(m_file, {})
-            lines.append("    (valid_pre %s %s)" % (sym, info.get("pre", "Standing")))
-            lines.append("    (valid_post %s %s)" % (sym, info.get("post", "Standing")))
-            if m_file in ["7-Move_forward.py", "composite_forward_groove.py"]:
-                lines.append("    (loc_transition %s pos_center pos_north)" % sym)
-                lines.append("    (loc_transition %s pos_south pos_center)" % sym)
-            elif m_file in ["8-Move_backward.py", "composite_backward_groove.py"]:
-                lines.append("    (loc_transition %s pos_north pos_center)" % sym)
-                lines.append("    (loc_transition %s pos_center pos_south)" % sym)
-            elif m_file in ["9-Diagonal_left.py", "composite_diagleft_snap.py"]:
-                lines.append("    (loc_transition %s pos_center pos_west)" % sym)
-                lines.append("    (loc_transition %s pos_east pos_center)" % sym)
-            elif m_file in ["10-Diagonal_right.py", "composite_diagright_sway.py"]:
-                lines.append("    (loc_transition %s pos_west pos_center)" % sym)
-                lines.append("    (loc_transition %s pos_center pos_east)" % sym)
-            lines.append("")
+                rem = info["dur"] % self.bar_dur
+                beat_err = min(rem, self.bar_dur - rem)
+                if info["dur"] > 6.0 or info["has_walk"]:
+                    max_plays = 1
+                elif info["leg_active"] and info["dur"] <= 4.3 and beat_err < 0.08:
+                    max_plays = 3
+                elif info["leg_active"]:
+                    max_plays = 2
+                else:
+                    max_plays = 1
+                if used.count(m_file) >= max_plays:
+                    continue
 
-    lines.extend([
-        "  )",
-        "",
-        "  (:goal (and",
-        "    (current_phase phase6)",
-        "    (at_posture Standing)",
-        "    (at_loc pos_center)",
-        "    (mandatory_done phase0)",
-        "    (mandatory_done phase1)",
-        "    (mandatory_done phase2)",
-        "    (mandatory_done phase3)",
-        "    (mandatory_done phase4)",
-        "    (mandatory_done phase5)",
-        "  ))",
-        ")",
-    ])
-    with open(output_path, "w") as f:
-        f.write("\n".join(lines))
+                new_x = x + info["dx"]
+                new_y = y + info["dy"]
+                if abs(new_x) > 1 or abs(new_y) > 1:
+                    continue
+                if t >= (self.max_duration - 14.0) and (abs(new_x) > abs(x) or abs(new_y) > abs(y)):
+                    continue
+
+                new_t = t + info["dur"]
+                if new_t + rem_mand_dur + crouch_dur > self.max_duration:
+                    continue
+
+                e_err = abs(info["energy"] - target_e)
+                expr = info["expressiveness"]
+                body_score = 2.0 if info["leg_active"] else 0.0
+                pause_score = 2.0 if (is_pause and info["has_pause"]) else 0.0
+                is_new_off = info["official"] and (m_file not in used)
+                off_bonus = 2.5 if (is_new_off and off_cnt < 5) else 0.0
+                repeat_bonus = 2.6 if (m_file in same_sec_moves and not info["has_walk"]) else 0.0
+                jerk_pen = max(0.0, info.get("peak_vel", 0.0) - 4.5) * 0.8
+                pose_gap = self._pose_gap(hist[-1][0], m_file) if hist else 0.0
+
+                cost_delta = max(0.3, (
+                    12.0 - expr - body_score - pause_score - off_bonus - repeat_bonus
+                    + e_err * 2.0 + beat_err * 4.5 + jerk_pen + pose_gap * 2.5
+                ) * (info["dur"] / 4.24))
+                new_g = g + cost_delta
+                new_off_cnt = off_cnt + (1 if is_new_off else 0)
+                new_visited = visited_stage or (new_x != 0 or new_y != 0)
+                new_used = used + (m_file,)
+                new_hist = hist + ((m_file, "INTERMEDIATE", info["dur"], info["official"], sec_id),)
+
+                h = self._heuristic(new_t, mand_mask, info["post"], new_x, new_y, new_off_cnt, new_visited)
+                heapq.heappush(pq, (new_g + h, new_g, (new_t, mand_mask, info["post"], new_x, new_y, new_off_cnt, new_visited, new_used, new_hist)))
+
+        return None
+
+    def _heuristic(self, t, mand_mask, pos, x, y, off_cnt, visited_stage):
+        rem_m = 6 - bin(mand_mask).count("1")
+        rem_o = max(0, 5 - off_cnt)
+        rem_t = max(0.0, 109.0 - t)
+        return (
+            rem_m * 4.0
+            + rem_o * 3.5
+            + (abs(x) + abs(y)) * 2.5
+            + (0.0 if visited_stage else 2.5)
+            + (2.0 if pos == "Sitting" else 0.0)
+            + rem_t * 1.55
+        )
+
 
 def generate_full_choreography(song_path=None):
-    """Orchestrates audio analysis, A* search over the full move library, PDDL export, and JSON output."""
+    """Orchestrates audio analysis, kinematic extraction, A* planning, and JSON export."""
     if not song_path:
         for cand in ["rick_120s.mp3", "Never Gonna Give You Up.mp3", "rick.mp3"]:
             if os.path.exists(cand):
                 song_path = cand
                 break
 
-    print("=== Multi-Objective Classical AI Choreography Planning ===")
-    bpm = 113.3
-    phase = 0.21
+    print("=== Forward A* NAO Choreography Planner ===")
+    bpm, phase = 113.3, 0.21
     data = load_real_energy_profile(song_path)
     if data:
         bpm = data.get("bpm", 113.3)
         phase = data.get("phase", 0.21)
-        bar_count = len(data.get("bars", []))
-        print("-> Audio track: %s (Tempo: %.1f BPM, %d real bars loaded)" % (
-            os.path.basename(song_path) if song_path else "rick_120s.wav", bpm, bar_count))
+        print("-> Audio: %s (%.1f BPM, %d bars)" % (
+            os.path.basename(song_path) if song_path else "rick_120s.wav", bpm, len(data.get("bars", []))))
 
-    print("-> Search space: %d candidate moves across standing, locomotion, and sitting postures" % len(CANDIDATE_MOVES))
-    print("-> Optimizing 7 Survey Criteria: Public Involvement, Human Characterization, Beat Alignment, Fluidity")
-    planner = StripsPlanner(max_duration=108.0, bpm=bpm)
+    init_feat, goal_feat, mand_lib, inter_lib = build_move_library()
+    print("-> Auto-extracted kinematics for %d moves:" % (2 + len(mand_lib) + len(inter_lib)))
+    for f in mand_lib + [init_feat, goal_feat]:
+        print("   [MAND/IG] %-22s dur=%4.1fs vel=%.2f amp=%.2f E=%.1f" % (
+            f["file"], f["dur"], f["raw_vel"], f["raw_amp"], f["energy"]))
+
+    planner = ChoreographyPlanner(init_feat, goal_feat, mand_lib, inter_lib, max_duration=115.0, bpm=bpm)
     result = planner.solve()
-
     if not result:
         print("ERROR: No valid plan found within constraints.")
         return False
 
-    total_time, score, plan_history = result
-    print("-> Optimal Plan Discovered via Forward A* Search:")
-    print("   Total Estimated Duration: %.1fs | Quality Metric: %.2f" % (total_time, -score))
+    total_time, total_cost, plan_history, expanded = result
+    print("-> A* solved in %d expanded nodes | Cost: %.2f | Duration: %.1fs" % (expanded, total_cost, total_time))
 
-    moves_list = []
-    details_list = []
+    moves_list, details_list = [], []
     cum_t = 0.0
-
-    print("\n=== PDDL Planning Solution Found ===")
-    for idx, (m_file, m_type, m_sym, m_dur, ph) in enumerate(plan_history, 1):
+    print("\n=== Planned Choreography ===")
+    for idx, (m_file, m_type, m_dur, is_official, sec_id) in enumerate(plan_history, 1):
         cum_t += m_dur
         moves_list.append(m_file)
         details_list.append({
             "step": idx,
             "type": m_type,
-            "symbol": m_sym,
             "file": m_file,
-            "phase": ph,
-            "estimated_duration": m_dur
+            "official": bool(is_official),
+            "section": int(sec_id),
+            "estimated_duration": round(m_dur, 2),
         })
-        print("Step %02d [Phase %d]: [%-12s] %-28s (~%4.1fs, Cumulative: %5.1fs)" % (
-            idx, ph, m_type, m_file, m_dur, cum_t
-        ))
+        tag = "[OFFICIAL]" if (m_type == "INTERMEDIATE" and is_official) else ""
+        print("Step %02d [sec=%d]: [%-12s] %-28s (~%4.1fs, Cum: %5.1fs) %s" % (
+            idx, sec_id, m_type, m_file, m_dur, cum_t, tag))
 
-    # Export problem.pddl
-    write_problem_pddl(plan_history, "problem.pddl")
-
-    # Export choreography_plan.json
     output_data = {
         "song_file": os.path.basename(song_path) if song_path else "rick_120s.mp3",
         "bpm": bpm,
         "phase": phase,
         "total_duration": round(cum_t, 1),
         "moves": moves_list,
-        "details": details_list
+        "details": details_list,
     }
     with open("choreography_plan.json", "w") as f:
         json.dump(output_data, f, indent=2)
 
-    intermediate_count = sum(1 for item in plan_history if item[1] == "INTERMEDIATE")
-    print("\nPlanned Choreography Duration: ~%.1fs (Contest Limit: 120.0s)" % cum_t)
-    print("Total Moves: %d | Intermediate Moves: %d (Minimum required: 5)" % (len(moves_list), intermediate_count))
-    print("Saved choreography_plan.json and problem.pddl successfully.")
+    off_used = sum(1 for item in plan_history if item[1] == "INTERMEDIATE" and item[3])
+    inter_total = sum(1 for item in plan_history if item[1] == "INTERMEDIATE")
+    print("\nDuration: %.1fs (<120s) | Intermediate: %d (Official Slide 16/17: %d >= 5)" % (
+        cum_t, inter_total, off_used))
+    print("Saved choreography_plan.json successfully.")
     return True
+
 
 if __name__ == "__main__":
     song_input = None
@@ -582,5 +534,4 @@ if __name__ == "__main__":
     for idx, a in enumerate(args):
         if a in ["--music", "-m"] and idx + 1 < len(args):
             song_input = args[idx + 1]
-
     generate_full_choreography(song_input)

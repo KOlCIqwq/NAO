@@ -1,4 +1,4 @@
-''' Motif: 1-Bar Verse Groove & Stylized Pause (beat-locked 113.3 BPM, 4 beats = 2.12s) '''
+''' Motif: 1-Bar Verse Groove & Hip-Cock Pause (full-body beat-locked 113.3 BPM, 4 beats = 2.12s) '''
 import sys
 import math
 from naoqi import ALProxy
@@ -15,44 +15,46 @@ def main(robotIP="127.0.0.1", port=9559):
     names = [
         "HeadPitch", "HeadYaw",
         "LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll", "LWristYaw", "LHand",
-        "RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand"
+        "RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand",
+        "LHipPitch", "LKneePitch", "LAnklePitch", "LHipRoll", "LAnkleRoll",
+        "RHipPitch", "RKneePitch", "RAnklePitch", "RHipRoll", "RAnkleRoll"
     ]
 
-    # 4 beats:
-    # 0.35s -> 0.53s -> 1.59s: Shoulder lean + head tilt on Beat 1, stylized FREEZE/PAUSE through Beat 3
-    # 1.88s -> 2.12s: Crisp wrist flick + head snap back to groove-ready on Beat 4
     t_grid = [0.35, 0.53, 1.59, 1.88, 2.12]
     times = [list(t_grid) for _ in names]
 
+    # Hip-cock freeze pause (bends knees + shifts hip right, holds beats 2-3, relaxes beat 4)
+    b = [0.18, 0.18, 0.18, 0.08, 0.0]
+    r = [0.13, 0.13, 0.13, -0.06, 0.0]
+
+    hip_p = [round(-0.44 - 0.5 * v, 4) for v in b]
+    knee_p = [round(0.69 + 1.0 * v, 4) for v in b]
+    ank_p = [round(-0.35 - 0.5 * v, 4) for v in b]
+    hip_r = [round(v, 4) for v in r]
+    ank_r = [round(-v, 4) for v in r]
+
     keys = [
-        # HeadPitch
-        [-8.0 * DEG, -8.0 * DEG, -8.0 * DEG, 9.0 * DEG, 0.0 * DEG],
-        # HeadYaw
-        [20.0 * DEG, 20.0 * DEG, 20.0 * DEG, -10.0 * DEG, 0.0 * DEG],
-        # LShoulderPitch
-        [40.0 * DEG, 40.0 * DEG, 40.0 * DEG, 60.0 * DEG, 68.0 * DEG],
-        # LShoulderRoll
-        [30.0 * DEG, 30.0 * DEG, 30.0 * DEG, 20.0 * DEG, 16.0 * DEG],
-        # LElbowYaw
-        [-45.0 * DEG, -45.0 * DEG, -45.0 * DEG, -70.0 * DEG, -60.0 * DEG],
-        # LElbowRoll
-        [-80.0 * DEG, -80.0 * DEG, -80.0 * DEG, -40.0 * DEG, -50.0 * DEG],
-        # LWristYaw
-        [-30.0 * DEG, -30.0 * DEG, -30.0 * DEG, 30.0 * DEG, 0.0 * DEG],
-        # LHand
-        [0.7, 0.7, 0.7, 0.2, 0.4],
-        # RShoulderPitch
-        [78.0 * DEG, 78.0 * DEG, 78.0 * DEG, 56.0 * DEG, 68.0 * DEG],
-        # RShoulderRoll
-        [-10.0 * DEG, -10.0 * DEG, -10.0 * DEG, -24.0 * DEG, -16.0 * DEG],
-        # RElbowYaw
-        [65.0 * DEG, 65.0 * DEG, 65.0 * DEG, 45.0 * DEG, 60.0 * DEG],
-        # RElbowRoll
-        [45.0 * DEG, 45.0 * DEG, 45.0 * DEG, 70.0 * DEG, 50.0 * DEG],
-        # RWristYaw
-        [0.0 * DEG, 0.0 * DEG, 0.0 * DEG, -35.0 * DEG, 0.0 * DEG],
-        # RHand
-        [0.3, 0.3, 0.3, 0.85, 0.4],
+        # HeadPitch & HeadYaw
+        [-6.0 * DEG, -6.0 * DEG, -6.0 * DEG, 8.0 * DEG, 0.0 * DEG],
+        [18.0 * DEG, 18.0 * DEG, 18.0 * DEG, -8.0 * DEG, 0.0 * DEG],
+        # Left arm (relaxed chest/hip pose)
+        [60.0 * DEG, 60.0 * DEG, 60.0 * DEG, 66.0 * DEG, 68.0 * DEG],
+        [20.0 * DEG, 20.0 * DEG, 20.0 * DEG, 16.0 * DEG, 16.0 * DEG],
+        [-52.0 * DEG, -52.0 * DEG, -52.0 * DEG, -64.0 * DEG, -60.0 * DEG],
+        [-68.0 * DEG, -68.0 * DEG, -68.0 * DEG, -48.0 * DEG, -50.0 * DEG],
+        [-12.0 * DEG, -12.0 * DEG, -12.0 * DEG, 10.0 * DEG, 0.0 * DEG],
+        [0.4, 0.4, 0.4, 0.3, 0.3],
+        # Right arm (relaxed low hip rest)
+        [78.0 * DEG, 78.0 * DEG, 78.0 * DEG, 64.0 * DEG, 68.0 * DEG],
+        [-10.0 * DEG, -10.0 * DEG, -10.0 * DEG, -18.0 * DEG, -16.0 * DEG],
+        [62.0 * DEG, 62.0 * DEG, 62.0 * DEG, 52.0 * DEG, 60.0 * DEG],
+        [45.0 * DEG, 45.0 * DEG, 45.0 * DEG, 60.0 * DEG, 50.0 * DEG],
+        [0.0 * DEG, 0.0 * DEG, 0.0 * DEG, -12.0 * DEG, 0.0 * DEG],
+        [0.3, 0.3, 0.3, 0.4, 0.3],
+        # Left leg
+        list(hip_p), list(knee_p), list(ank_p), list(hip_r), list(ank_r),
+        # Right leg
+        list(hip_p), list(knee_p), list(ank_p), list(hip_r), list(ank_r),
     ]
 
     motion.angleInterpolation(names, keys, times, True)
