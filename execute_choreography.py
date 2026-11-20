@@ -1,6 +1,6 @@
 """
 NAO Choreography Executor
-Reads the PDDL-generated choreography plan and executes it sequentially on the NAO robot.
+Reads the planner-generated choreography plan and executes it sequentially on the NAO robot.
 Compatible with Python 2.7 (Choregraphe SDK) and Python 3.
 
 Supports synchronized background audio playback (inspired by TheDebuggers / PartyNAO).
@@ -17,7 +17,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 positions_dir = os.path.join(script_dir, "RobotPositions")
 sys.path.insert(0, positions_dir)
 
-_SYNC_STATE = {"music_start": None, "bpm": 113.3, "phase": 0.21, "sim_scale": 0.77, "target_end": None}
+_SYNC_STATE = {"music_start": None, "bpm": 113.3, "phase": 0.21, "sim_scale": 0.77, "target_end": None, "skip_next_sleep": False}
 
 def _max_time(t_obj):
     if isinstance(t_obj, (int, float)):
@@ -135,7 +135,7 @@ try:
     _CROUCH_ANGLES = [0.0, 0.0, 1.4, 0.18, -1.35, -0.5, 0.0, 0.3, 0.0, 0.0, -0.85, 2.05, -1.15, 0.0, 0.0, 0.0, -0.85, 2.05, -1.15, 0.0, 1.4, -0.18, 1.35, 0.5, 0.0, 0.3]
     class _DummyTTS(object):
         def say(self, *args, **kwargs):
-            pass
+            _SYNC_STATE["skip_next_sleep"] = True
     class _FastPostureProxy(object):
         def __init__(self, real_proxy, motion_proxy=None):
             self._real = real_proxy
@@ -166,7 +166,7 @@ try:
                             self._motion.angleInterpolation(_SIT_NAMES, _CROUCH_ANGLES, 1.6, True)
                     except Exception:
                         pass
-                    return self._real.goToPosture("StandInit", 0.9)
+                    return self._real.goToPosture(postureName, 0.9)
             return self._real.goToPosture(postureName, max(0.95, float(speed)))
         def __getattr__(self, name):
             return getattr(self._real, name)
@@ -191,13 +191,15 @@ except ImportError:
     ALProxy = None
     _orig_ALProxy = None
 
-# Monkey-patch time.sleep to eliminate 1-second dead-stop freezes between moves
 _orig_sleep = time.sleep
 def _fluid_sleep(secs):
-    # Eliminate pauses (>= 0.1s) from move files to keep choreography continuous and fluid
-    if secs >= 0.1:
+    if _SYNC_STATE.get("skip_next_sleep"):
+        _SYNC_STATE["skip_next_sleep"] = False
         return
-    _orig_sleep(min(secs, 0.02))
+    if secs >= 0.1:
+        _orig_sleep(min(float(secs) * 0.5, 1.0))
+        return
+    _orig_sleep(secs)
 time.sleep = _fluid_sleep
 
 def start_music(audio_path):
@@ -338,7 +340,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
         est_dur = float(detail.get("estimated_duration", 4.24))
         is_disp = ("composite_" in move_file) or any(x in move_file for x in ["7-Move", "8-Move", "9-Diag", "10-Diag"])
 
-        if not dry_run and move_type == "INTERMEDIATE" and not is_disp:
+        if not dry_run and move_type == "INTERMEDIATE" and not is_disp and not detail.get("official"):
             elapsed_now = time.time() - start_time
             if elapsed_now + est_dur > MAX_WALL_TIME:
                 print("--> Step {:02d}/{:02d}: Skipping {} (elapsed {:.1f}s, keeping total < 120s)".format(
@@ -369,6 +371,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
             except Exception:
                 pass
 
+        _SYNC_STATE["skip_next_sleep"] = False
         try:
             mod = __import__(mod_name)
             is_bezier = hasattr(mod, "keys") and mod.keys and isinstance(mod.keys[0], list) and mod.keys[0] and isinstance(mod.keys[0][0], list)
@@ -458,18 +461,36 @@ if __name__ == "__main__":
     music_arg = None
 
     args = sys.argv[1:]
-    if len(args) > 0 and args[0].isdigit():
-        port = int(args[0])
-        args = args[1:]
-    elif len(args) > 0 and args[0] in ["dry_run", "dry-run", "0"]:
-        port = 0
-        args = args[1:]
-    for idx, a in enumerate(args):
-        if a in ["--music", "-m"] and idx + 1 < len(args):
-            joined = " ".join(args[idx + 1:])
+    pos_args = []
+    i = 0
+    while i < len(args):
+        a = args[i]
+        if a in ["--music", "-m"] and i + 1 < len(args):
+            joined = " ".join(args[i + 1:])
             if os.path.exists(joined):
                 music_arg = joined
-            else:
-                music_arg = args[idx + 1]
+                break
+            music_arg = args[i + 1]
+            i += 2
+        elif a == "--ip" and i + 1 < len(args):
+            ip = args[i + 1]
+            i += 2
+        elif a in ["--port", "-p"] and i + 1 < len(args):
+            port = 0 if args[i + 1] in ["dry_run", "dry-run", "0"] else int(args[i + 1])
+            i += 2
+        else:
+            pos_args.append(a)
+            i += 1
+
+    if len(pos_args) == 1:
+        if pos_args[0] in ["dry_run", "dry-run", "0"]:
+            port = 0
+        elif pos_args[0].isdigit():
+            port = int(pos_args[0])
+        else:
+            ip = pos_args[0]
+    elif len(pos_args) >= 2:
+        ip = pos_args[0]
+        port = 0 if pos_args[1] in ["dry_run", "dry-run", "0"] else int(pos_args[1])
 
     execute_plan(ip, port, music_file=music_arg)

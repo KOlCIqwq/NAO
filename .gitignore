@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+# LaTeX build artifacts
+pdf/*.aux
+pdf/*.log
+pdf/*.out
+pdf/*.toc
+pdf/*.synctex.gz
