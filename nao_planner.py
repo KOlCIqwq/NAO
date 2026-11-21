@@ -1,6 +1,6 @@
 """
 NAO Choreography Planner
-Autonomous forward state-space A* planner compliant with the NAO Planning Competition rules:
+Autonomous forward state-space A* planner:
 - Initial state: StandInit | Goal state: Crouch
 - All 6 mandatory positions {Sit, SitRelax, WipeForehead, Stand, Hello, StandZero}
   scheduled dynamically by A* in any valid posture-consistent order
@@ -47,13 +47,13 @@ INTERMEDIATE_SPECS = {
     "10-Diagonal_right.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": -1, "official": True, "fallback_dur": 3.0},
     "sprinkler.py":                 {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": True, "fallback_dur": 10.4},
 
-    # Expanded stage locomotion composites
+    # Stage walk moves
     "composite_diagleft_snap.py":   {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 1, "official": False, "fallback_dur": 4.24},
     "composite_diagright_sway.py":  {"pre": "Standing", "post": "Standing", "dx": 0, "dy": -1, "official": False, "fallback_dur": 4.24},
     "composite_forward_groove.py":  {"pre": "Standing", "post": "Standing", "dx": 1, "dy": 0, "official": False, "fallback_dur": 4.24},
     "composite_backward_groove.py": {"pre": "Standing", "post": "Standing", "dx": -1, "dy": 0, "official": False, "fallback_dur": 4.24},
 
-    # Expanded beat-quantized standing motifs & full-body dances
+    # Beat-quantized standing motifs and dances
     "motif_hip_grooves.py":         {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
     "motif_knee_bounce_step.py":    {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 2.12},
     "motif_astley_groove.py":       {"pre": "Standing", "post": "Standing", "dx": 0, "dy": 0, "official": False, "fallback_dur": 4.24},
@@ -328,30 +328,31 @@ class ChoreographyPlanner(object):
         start_hist = ((self.init_feat["file"], "INITIAL", init_dur, False, init_sec),)
         # state: (t, mand_mask, pos, x, y, off_cnt, visited_stage, used_tuple, hist)
         start_state = (init_dur, 0, "Standing", 0, 0, 0, False, (), start_hist)
-        pq = [(0.0, 0.0, start_state)]
-        visited = {}
-        nodes = 0
+        q = [(0.0, 0.0, start_state)]
+        seen = {}
+        cnt = 0
 
-        while pq and nodes < 120000:
-            f, g, (t, mand_mask, pos, x, y, off_cnt, visited_stage, used, hist) = heapq.heappop(pq)
-            nodes += 1
+        while q and cnt < 120000:
+            f, g, (t, mand_mask, pos, x, y, off_cnt, visited_stage, used, hist) = heapq.heappop(q)
+            cnt += 1
+            # if cnt % 2000 == 0: print("dbg:", cnt, "t:", round(t, 1))
 
             last_mand = bool(hist and hist[-1][1] == "MANDATORY")
-            state_key = (mand_mask, pos, x, y, min(off_cnt, 5), visited_stage, last_mand, int(round(t / 2.0)))
-            if state_key in visited and visited[state_key] <= f:
+            k = (mand_mask, pos, x, y, min(off_cnt, 5), visited_stage, last_mand, int(round(t / 2.0)))
+            if k in seen and seen[k] <= f:
                 continue
-            visited[state_key] = f
+            seen[k] = f
 
             # Goal test: all 6 mandatory done, Standing at center, stage explored, >=5 official moves, >=109s
             if (mand_mask == 63 and pos == "Standing" and x == 0 and y == 0
                     and visited_stage and off_cnt >= 5 and t >= 109.0 and t + crouch_dur <= self.max_duration):
-                _, _, goal_sec = self._query_music(t)
-                goal_hist = hist + ((self.goal_feat["file"], "GOAL", crouch_dur, True, goal_sec),)
-                return (t + crouch_dur, g, goal_hist, nodes)
+                _, _, g_sec = self._query_music(t)
+                goal_hist = hist + ((self.goal_feat["file"], "GOAL", crouch_dur, True, g_sec),)
+                return (t + crouch_dur, g, goal_hist, cnt)
 
-            # Admissible time-budget pruning
-            rem_mand_dur = sum(m["dur"] for i, m in enumerate(self.mandatory) if not (mand_mask & (1 << i)))
-            if t + rem_mand_dur + crouch_dur > self.max_duration:
+            # Time-budget pruning
+            rem_t = sum(m["dur"] for i, m in enumerate(self.mandatory) if not (mand_mask & (1 << i)))
+            if t + rem_t + crouch_dur > self.max_duration:
                 continue
 
             target_e, is_pause, sec_id = self._query_music(t)
@@ -382,7 +383,7 @@ class ChoreographyPlanner(object):
                 new_pos = m["post"]
                 new_hist = hist + ((m["file"], "MANDATORY", m["dur"], True, sec_id),)
                 h = self._heuristic(new_t, new_mask, new_pos, x, y, off_cnt, visited_stage)
-                heapq.heappush(pq, (new_g + h, new_g, (new_t, new_mask, new_pos, x, y, off_cnt, visited_stage, used, new_hist)))
+                heapq.heappush(q, (new_g + h, new_g, (new_t, new_mask, new_pos, x, y, off_cnt, visited_stage, used, new_hist)))
 
             # Action B: Execute any Intermediate move
             same_sec_moves = set(h_item[0] for h_item in hist[:-1] if h_item[1] == "INTERMEDIATE" and h_item[4] == sec_id)
@@ -417,7 +418,7 @@ class ChoreographyPlanner(object):
                     continue
 
                 new_t = t + info["dur"]
-                if new_t + rem_mand_dur + crouch_dur > self.max_duration:
+                if new_t + rem_t + crouch_dur > self.max_duration:
                     continue
 
                 e_err = abs(info["energy"] - target_e)
@@ -441,7 +442,7 @@ class ChoreographyPlanner(object):
                 new_hist = hist + ((m_file, "INTERMEDIATE", info["dur"], info["official"], sec_id),)
 
                 h = self._heuristic(new_t, mand_mask, info["post"], new_x, new_y, new_off_cnt, new_visited)
-                heapq.heappush(pq, (new_g + h, new_g, (new_t, mand_mask, info["post"], new_x, new_y, new_off_cnt, new_visited, new_used, new_hist)))
+                heapq.heappush(q, (new_g + h, new_g, (new_t, mand_mask, info["post"], new_x, new_y, new_off_cnt, new_visited, new_used, new_hist)))
 
         return None
 
@@ -460,7 +461,7 @@ class ChoreographyPlanner(object):
 
 
 def generate_full_choreography(song_path=None):
-    """Orchestrates audio analysis, kinematic extraction, A* planning, and JSON export."""
+    """Run audio analysis, kinematic extraction, A* search, and write JSON plan."""
     if not song_path:
         for cand in ["rick_120s.mp3", "Never Gonna Give You Up.mp3", "rick.mp3"]:
             if os.path.exists(cand):

@@ -130,7 +130,7 @@ def get_energy_profile(file_path, num_slices=10):
     """
     Computes an energy profile (scale 1.0 to 5.0) across num_slices time windows.
     If WAV file, extracts exact RMS loudness from audio samples.
-    For other formats, extracts RMS via scipy if available, or uses a robust musical structure model.
+    For other formats, extracts RMS via scipy if available, or uses a 5-stage musical structure curve.
     """
     # Check pure Python MP3 extraction first if MP3
     if file_path.lower().endswith(('.mp3', '.m4a')):
@@ -154,24 +154,25 @@ def get_energy_profile(file_path, num_slices=10):
             with wave.open(file_path, 'r') as w:
                 sampwidth = w.getsampwidth()
                 n_frames = w.getnframes()
-                slice_frames = n_frames // num_slices
-                if slice_frames > 0 and sampwidth == 2:
-                    energies = []
+                chunk = n_frames // num_slices
+                if chunk > 0 and sampwidth == 2:
+                    vals = []
                     for i in range(num_slices):
-                        w.setpos(i * slice_frames)
-                        n_to_read = min(4000, slice_frames)
-                        raw_data = w.readframes(n_to_read)
-                        count = len(raw_data) // 2
-                        samples = struct.unpack('<%dh' % count, raw_data)
+                        w.setpos(i * chunk)
+                        nread = min(4000, chunk)
+                        buf = w.readframes(nread)
+                        count = len(buf) // 2
+                        samples = struct.unpack('<%dh' % count, buf)
                         # Subsample every 2nd sample for speed
                         sub = samples[::2] if count > 2 else samples
                         rms = math.sqrt(sum(s * s for s in sub) / float(max(len(sub), 1)))
-                        energies.append(rms)
+                        # print("slice", i, rms)
+                        vals.append(rms)
 
-                    max_e = max(energies) if max(energies) > 0 else 1.0
-                    min_e = min(energies)
+                    max_e = max(vals) if max(vals) > 0 else 1.0
+                    min_e = min(vals)
                     scale = max(max_e - min_e, 1.0)
-                    profile = [round(1.0 + 4.0 * (e - min_e) / scale, 2) for e in energies]
+                    profile = [round(1.0 + 4.0 * (e - min_e) / scale, 2) for e in vals]
                     rhythm = detect_tempo_and_beats(file_path)
                     return {
                         'duration': dur,
@@ -184,7 +185,7 @@ def get_energy_profile(file_path, num_slices=10):
         except Exception:
             pass
 
-    # Generic musical structure heuristic (Intro -> Build -> Drop/Chorus -> Bridge -> Outro)
+    # 5-stage fallback energy curve over 24 slices
     # Normalized across the duration
     profile = []
     for i in range(num_slices):

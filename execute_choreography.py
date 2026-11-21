@@ -2,8 +2,6 @@
 NAO Choreography Executor
 Reads the planner-generated choreography plan and executes it sequentially on the NAO robot.
 Compatible with Python 2.7 (Choregraphe SDK) and Python 3.
-
-Supports synchronized background audio playback (inspired by TheDebuggers / PartyNAO).
 """
 
 import sys
@@ -143,7 +141,7 @@ try:
         def goToPosture(self, postureName, speed):
             # In simulated NAO (Choregraphe), the default IK solver for Sit & SitRelax
             # collides with the ground plane, causing left tipping and 30s timeout freezes.
-            # Using verified direct joint interpolation transitions in 2.5s smoothly with 100% balance.
+            # Using verified direct joint interpolation transitions smoothly without tipping.
             if self._motion is not None:
                 if postureName == "Sit":
                     try:
@@ -332,24 +330,25 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
         _SYNC_STATE["music_start"] = start_time
 
     current_posture = "StandInit"
-    planned_cum_t = 0.0
+    cum_t = 0.0
     for idx, move_file in enumerate(moves, 1):
         mod_name = os.path.splitext(move_file)[0]
         detail = details[idx - 1] if idx - 1 < len(details) else {}
         move_type = detail.get("type", "INTERMEDIATE")
         est_dur = float(detail.get("estimated_duration", 4.24))
-        is_disp = ("composite_" in move_file) or any(x in move_file for x in ["7-Move", "8-Move", "9-Diag", "10-Diag"])
+        moves_xy = ("composite_" in move_file) or any(x in move_file for x in ["7-Move", "8-Move", "9-Diag", "10-Diag"])
 
-        if not dry_run and move_type == "INTERMEDIATE" and not is_disp and not detail.get("official"):
-            elapsed_now = time.time() - start_time
-            if elapsed_now + est_dur > MAX_WALL_TIME:
+        if not dry_run and move_type == "INTERMEDIATE" and not moves_xy and not detail.get("official"):
+            dt_now = time.time() - start_time
+            if dt_now + est_dur > MAX_WALL_TIME:
                 print("--> Step {:02d}/{:02d}: Skipping {} (elapsed {:.1f}s, keeping total < 120s)".format(
-                    idx, len(moves), mod_name, elapsed_now))
+                    idx, len(moves), mod_name, dt_now))
                 continue
 
-        planned_cum_t += est_dur
+        cum_t += est_dur
         if not dry_run:
-            _SYNC_STATE["target_end"] = planned_cum_t
+            _SYNC_STATE["target_end"] = cum_t
+            # print("DEBUG target_end:", cum_t, "scale:", _SYNC_STATE["sim_scale"])
 
         print("--> Step {:02d}/{:02d}: Executing {}".format(idx, len(moves), mod_name))
         if not dry_run and move_type == "INTERMEDIATE":
@@ -361,7 +360,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
                 _orig_sleep(wait)
         step_start = time.time()
 
-        # Fluid posture transition: if moving from floor/crouch to a standing movement, stand up smoothly
+        # Stand up before standing moves if currently on the floor or crouched
         is_floor_move = ("sitting" in move_file.lower()) or any(x in move_file for x in ["6-Crouch", "16-Sit", "17-SitRelax", "11-Stand"])
         if not is_floor_move and current_posture in ["Crouch", "Sitting"]:
             try:
@@ -381,7 +380,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
             elif hasattr(mod, "names") and hasattr(mod, "keys") and hasattr(mod, "times"):
                 # Keyframe trajectory export: interpolate joint angles directly via ALMotion
                 if not dry_run and motion is not None:
-                    # For standing upper-body dance moves (finger_snap), filter out corrupted leg keyframes
+                    # For standing upper-body dance moves (finger_snap), filter out leg keyframes
                     # that tilt the robot onto its heels and cause it to fall backwards.
                     exec_names = []
                     exec_keys = []

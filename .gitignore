@@ -10,6 +10,7 @@ wheels/
 .venv
 
 # LaTeX build artifacts
+/pdf
 pdf/*.aux
 pdf/*.log
 pdf/*.out
