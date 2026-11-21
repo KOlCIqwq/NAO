@@ -2,13 +2,14 @@
   <img src="Music_So_Good.jpg" alt="logo" width="256" />
 </p>
 
-# NAO Planning Challenge: Music-Synchronized Choreography
+# NAO Planning Challenge
 
-**Fundamentals of Artificial Intelligence**, Università di Bologna
+**For course project: Fundamentals of Artificial Intelligence**, Università di Bologna
 
 ## Team Information
-- **Student Name(s):** [FILL TEAM MEMBER NAME(S)]
-- **Student Email(s):** [FILL INSTITUTIONAL EMAIL(S)]
+- Group Name: **Le Teste Radio**
+- **Weijie Liu** [weijie.liu@studio.unibo.it]
+- **Paolo Cavaliere** [paolo.cavaliere2@studio.unibo.it]
 
 ---
 
@@ -83,12 +84,10 @@ Before running the choreography on a virtual robot:
 
 ## Project Structure
 
-- `nao_planner.py`: A\* choreography planner.
+- `nao_planner.py`: A* choreography planner.
 - `audio_analyzer.py`: Pure-Python music beat, energy, and structure analyzer.
 - `execute_choreography.py`: Cross-platform robot runner with beat sync and stability handling.
 - `choreography_plan.json`: Generated 29-step dance plan (111.0s nominal).
 - `rick_120s.mp3` / `rick_120s.wav`: 120s audio track (*Never Gonna Give You Up*, 113.3 BPM).
 - `run_sim.bat`: Windows helper script for Choregraphe Python 2.7.
 - `RobotPositions/`: Mandatory, official intermediate, course, and custom dance scripts.
-- `pdf/`: Full technical documentation (`documentation.tex` and `documentation.pdf`).
-- `README.md`: Project overview and setup instructions.
