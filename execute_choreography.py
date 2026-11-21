@@ -423,7 +423,7 @@ def execute_plan(ip="127.0.0.1", port=9559, plan_file="choreography_plan.json", 
             raw_off = ((now_t - start_time) - phase) % beat_dt
             beat_off = raw_off - beat_dt if raw_off > (beat_dt / 2.0) else raw_off
             print("    [t={:.1f}s (plan={:.1f}s), step={:.2f}s, scale={:.2f}, beat_off={:+.2f}s]".format(
-                now_t - start_time, planned_cum_t, now_t - step_start, _SYNC_STATE["sim_scale"], beat_off))
+                now_t - start_time, cum_t, now_t - step_start, _SYNC_STATE["sim_scale"], beat_off))
 
     elapsed = time.time() - start_time
     print("\n=== Choreography Complete ===")
