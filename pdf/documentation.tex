@@ -48,31 +48,13 @@
   {\small Dipartimento di Informatica, Scienza e Ingegneria (DISI)\par}
   \vspace{1.2cm}
 
-  {\Huge\bfseries\color{navy} Music-synchronized AI choreography planning for the humanoid NAO robot\par}
+  {\Huge\bfseries\color{navy} Short report on NAO robot project\par}
   \vspace{0.5cm}
-  {\Large\color{tealblue} Architecture, heuristic search, simulator stabilization, and oral defense guide\par}
-  \vspace{1.0cm}
-
-  {\small
-  \begin{tabularx}{0.96\textwidth}{r X}
-    \toprule
-    \textbf{Course} & Fundamentals of Artificial Intelligence (NAO Planning Competition) \\
-    \textbf{Team members} & {[Team Member 1, Email]} \\
-                          & {[Team Member 2, Email]} \\
-    \textbf{Repository} & \url{https://github.com/KOlCIqwq/NAO} \\
-    \textbf{Audio track} & Rick Astley, \emph{Never Gonna Give You Up} (113.3\,BPM; WAV 120.0\,s, MP3 120.12\,s) \\
-    \textbf{Target platform} & SoftBank Robotics NAO H25, Choregraphe Suite 2.8 (Python 2.7 / 3.x) \\
-    \bottomrule
-  \end{tabularx}
-  }
 
   \vspace{1.2cm}
   \begin{abstract}
     \noindent This document explains how our NAO Planning Competition entry works and why we made each design choice. Instead of writing a fixed list of moves or scoring moves by hand, we split the project into three Python scripts. First, \code{audio\_analyzer.py} reads 16-bit PCM WAV samples to measure how loud each musical bar is, where volume dips happen, and which bars repeat as verses or choruses. Next, \code{nao\_planner.py} reads joint angles from 37 move scripts in \code{RobotPositions/} and runs forward state-space A* search to build \code{choreography\_plan.json}. Finally, \code{execute\_choreography.py} wraps NAOqi proxies at runtime so the robot stays on the beat inside Choregraphe, avoids falling during sitting and standing moves, and finishes under 120\,s. Across the 37 candidate moves, \code{ChoreographyPlanner.solve()} expands 8,937 nodes in 0.077\,s (0.71\,s total including file loading) and finds a 29-step, 111.0\,s plan at cost 181.85. A live run on Choregraphe Suite 2.8 (port 9559) finished in 115.4\,s with zero errors, ended in \code{Crouch} (\code{HeadZ = 0.354\,m}), and stopped at odometry coordinates $x = -0.004\,\text{m}$, $y = +0.009\,\text{m}$ ($\theta = -0.177\,\text{rad}$).
   \end{abstract}
-
-  \vfill
-  {\small\color{gray} Prepared for project submission and voting-day presentation.\par}
 \end{titlepage}
 
 \tableofcontents
@@ -448,94 +430,5 @@ Designing an autonomous choreography planner for a humanoid robot requires balan
 \end{table}
 
 \clearpage
-
-% ----------------------------------------------------------------------
-% SECTION 6: PRESENTATION AND ORAL DEFENSE Q&A
-% ----------------------------------------------------------------------
-\section{Presentation and oral-defense Q\&A}
-
-\subsection*{A. AI planning and search theory}
-
-\begin{qa}{Q1. Why write forward A* in Python instead of using a PDDL planner or Simulated Annealing?}
-PDDL handles boolean preconditions well, but it cannot evaluate continuous time ($109.0 \le t \le 115.0\,\text{s}$), sliding bar-by-bar loudness lookup, bar modulo beat error, or shared-joint pose gaps out of the box. Simulated Annealing gives different plans on different runs unless seeded. Forward A* in Python handles temporal and audio costs directly, checks every rule at every step, and solves the 37-move pool deterministically in 8,937 nodes (0.077\,s).
-\end{qa}
-
-\begin{qa}{Q2. Is your heuristic $h(s)$ admissible or consistent?}
-No. It is a weighted, non-admissible heuristic. Each missing second before $109.0\,\text{s}$ adds $1.55$ to $h(s)$, while a cheap step can cost as little as $0.3$ over $4.24\,\text{s}$ ($0.071/\text{s}$). Overestimating remaining cost turns the search into weighted A*, pushing expansions toward the $109.0\,\text{s}$ minimum duration quickly instead of hitting the 120,000-node cap. Every hard rule (mandatory mask $=63$, $\ge 5$ official moves, posture legality, center return, $T \le 115\,\text{s}$) is checked in the goal test, so the output plan is always valid.
-\end{qa}
-
-\begin{qa}{Q3. Why use positive regret instead of maximizing positive reward directly?}
-A* uses a min-heap ordered by $f = g + h$ and expects non-negative step costs. Subtracting rewards directly creates negative edges, which makes longer paths look cheaper and encourages filler loops. Flooring every step cost at $0.3$ and scaling by $d_m / 4.24$ ensures $g$ rises as time passes.
-\end{qa}
-
-\begin{qa}{Q4. Why quantize time as \code{round(t / 2.0)} in the visited dictionary?}
-Move durations differ slightly ($2.12\,\text{s}$, $3.50\,\text{s}$, $4.24\,\text{s}$, $4.64\,\text{s}$, $5.00\,\text{s}$). Keeping exact floating-point timestamps would treat schedules differing by $0.05\,\text{s}$ as separate states and explode the search tree. Grouping states into 2-second buckets (about one bar) keeps only the cheapest representative per bucket.
-\end{qa}
-
-\begin{qa}{Q5. How do you model consecutive move incompatibilities (Slide 14)?}
-Incompatibilities are blocked at three levels. Posture rules (\code{Standing}, \code{Sitting}, \code{Crouch}) stop standing scripts from running during seated phases. Floor rules force \code{16-Sit} at $(0,0)$ and require \code{11-Stand} after \code{17-SitRelax}. Search guards also block consecutive identical moves, consecutive leg-static standing moves, and sharp joint jumps via \code{\_pose\_gap} and \code{peak\_vel} penalties.
-\end{qa}
-
-\begin{qa}{Q6. Why schedule the 6 mandatory positions with a bitmask instead of fixing the order $P_1$ through $P_6$?}
-Slide 13 lists the 6 required milestones (\code{Sit}, \code{SitRelax}, \code{WipeForehead}, \code{Stand}, \code{Hello}, \code{StandZero}) without prescribing one permutation. Using a 6-bit mask lets the planner place \code{WipeForehead} in the quieter intro (Section 0), put \code{Hello} at the louder chorus entry (Section 1), and run \code{16-Sit} $\to$ \code{17-SitRelax} $\to$ \code{11-Stand} together while finishing all 6 before \code{6-Crouch}.
-\end{qa}
-
-\begin{qa}{Q7. How do you stop the 5 official intermediate moves from clumping together (Slide 15)?}
-The \code{last\_mand} flag blocks back-to-back standing mandatory moves, forcing dance moves between them. \code{off\_bonus = 2.5} rewards picking each distinct official move until 5 are reached, and energy matching plus \code{\_pose\_gap} spread the 5 chosen official moves across Steps 3, 5, 15, 17, and 22.
-\end{qa}
-
-\subsection*{B. Audio analysis and rhythm synchronization}
-
-\begin{qa}{Q8. Does the system work on other songs besides \emph{Never Gonna Give You Up}?}
-You can pass any track with \code{--music <file>}. \code{audio\_analyzer.py} reads duration and energy profiles from arbitrary WAV or MP3 files using Python's standard library. One current limitation is that \code{load\_real\_energy\_profile()} calls \code{get\_bar\_features()} without passing an estimated BPM, so WAV files default to $\text{BPM} = 113.3$ and $\phi = 0.21\,\text{s}$. \code{detect\_tempo\_and\_beats()} already has a WAV autocorrelation BPM estimator using \code{numpy} and \code{scipy}, so passing its output into \code{get\_bar\_features()} is the only change needed for other tempos. MP3-only inputs fall back to \code{get\_energy\_profile()}.
-\end{qa}
-
-\begin{qa}{Q9. Why keep both \code{rick\_120s.mp3} and \code{rick\_120s.wav}?}
-\code{rick\_120s.wav} holds uncompressed 16-bit PCM samples, so \code{audio\_analyzer.py} can compute exact per-beat loudness using Python's built-in \code{wave} module without \code{ffmpeg} or \code{librosa}. \code{rick\_120s.mp3} is much smaller and plays cleanly through Windows MCI, \code{mpg123}, or \code{afplay} during execution.
-\end{qa}
-
-\begin{qa}{Q10. Why reward repeating a move inside the same musical section (\code{repeat\_bonus = 2.6})?}
-Pop songs repeat musical phrases across verses and choruses, so bringing back a signature move inside the same section makes the dance look structured. In our plan, this repeats \code{motif\_disco\_point} in Section 0 (Steps 7, 11, 13), \code{dab} and \code{ThrillerClap} in Section 1 (Steps 14, 16 and 18, 20), and \code{motif\_astley\_groove} with \code{motif\_beat\_drop} in late Section 0 (Steps 23 to 26). Repetition caps and the back-to-back ban keep it from getting repetitive.
-\end{qa}
-
-\begin{qa}{Q11. How do you keep the robot in sync when Choregraphe runs slower than real time?}
-In our live run on port 9559, \code{sim\_scale} tracked simulator speed between $0.63$ and $0.77$. At around $0.65\times$ real time, an unscaled $111.0\,\text{s}$ plan would finish well past the $120\,\text{s}$ deadline. \code{\_SyncedMotionProxy} adjusts timing as it goes: it scales timestamps by the online \code{sim\_scale} EMA, snaps \code{is\_beat\_move} endings to the nearest 113.3\,BPM beat with a $\pm 1$-beat drift pull toward \code{target\_end}, and enforces \code{MAX\_WALL\_TIME = 115.5\,s}.
-\end{qa}
-
-\subsection*{C. Robotics, kinematics, and simulation stability}
-
-\begin{qa}{Q12. Why did default \code{16-Sit}, \code{17-SitRelax}, and \code{11-Stand} fail in Choregraphe, and how did you fix them?}
-As noted in \code{execute\_choreography.py}, stock \code{ALRobotPosture.goToPosture} transitions for \code{Sit} and \code{SitRelax} can hit the virtual floor or tip backward in Choregraphe, stalling for up to 30\,s in recovery, and rising straight from \code{SitRelax} can make the feet slip forward. \code{\_FastPostureProxy} bypasses stock IK on \code{Sit} and \code{SitRelax} with verified joint arrays (\code{\_CROUCH\_ANGLES}, \code{\_SIT\_ANGLES}, \code{\_SITRELAX\_ANGLES}). Before \code{11-Stand} calls \code{goToPosture("Stand", 0.9)}, it tucks into \code{\_CROUCH\_ANGLES} over $1.6\,\text{s}$ to center weight over the feet. A direct test on port 9559 confirmed that \code{SitRelax} $\to$ \code{Crouch} $\to$ \code{Stand} finished upright in \code{Posture = Stand} at \code{HeadZ = 0.458\,m}.
-\end{qa}
-
-\begin{qa}{Q13. Why wrap \code{ALProxy} and \code{time.sleep} instead of editing \code{RobotPositions/*.py}?}
-Wrapping \code{naoqi.ALProxy} inside \code{execute\_choreography.py} leaves all 37 candidate scripts unchanged so they still run standalone, while letting the executor reuse sockets, mute \code{ALTextToSpeech}, apply beat-sync scaling, and stabilize posture calls in one place. Setting \code{\_SYNC\_STATE["skip\_next\_sleep"] = True} inside \code{\_DummyTTS.say()} skips only the 1\,s pause after speech prompts while keeping scaled motion delays ($\min(0.5 \cdot \text{secs}, 1.0)$) for \code{setAngles()} scripts like \code{3-Double\_movement.py} and \code{4-Arms\_opening.py}.
-\end{qa}
-
-\begin{qa}{Q14. Steps 27 and 28 were skipped at 113.4\,s in the live test. Is that a bug?}
-No, that is the \code{MAX\_WALL\_TIME = 115.5\,s} guard doing its job. Under Choregraphe load, \code{3-Double\_movement} took $6.98\,\text{s}$ and \code{4-Arms\_opening} took $8.32\,\text{s}$, bringing elapsed wall time to $113.4\,\text{s}$ after Step 26. Because the guard protects mandatory and official moves while skipping late non-official, non-displacement moves, it skipped Steps 27 and 28 (\code{motif\_astley\_groove} and \code{motif\_groove\_pause}) and ran Step 29 (\code{6-Crouch.py}) right away, finishing at 115.4\,s.
-\end{qa}
-
-\begin{qa}{Q15. Would the same code run on a real physical NAO robot?}
-Yes, using \code{execute\_choreography.py <ROBOT\_IP> 9559}. Because \code{sim\_scale} updates from measured step times and stays within $[0.62, 1.05]$, real-time hardware execution naturally pushes \code{sim\_scale} toward $1.0$. Keyframe sanitization ($\ge 0.16\,\text{s}$ interval between points) already checks joint velocity limits, though sitting and crouch transitions should be tested on a mat before a stage demo.
-\end{qa}
-
-\subsection*{D. Artistic criteria, limitations, and extensions}
-
-\begin{qa}{Q16. Why does the final plan only move backward and forward once ($\pm 8\,\text{cm}$)?}
-The official walk moves (\code{7-Move\_forward}, \code{8-Move\_backward}) shift $0.08\,\text{m}$ per call, and the goal test only asks for \code{visited\_stage = True} (leaving $(0,0)$ at least once) before returning to center. Walking moves also score lower on \code{expressiveness} ($2.2$) and have durations ($3.5\,\text{s}$) that do not line up with the $2.12\,\text{s}$ bar, so A* visits $(-1,0)$ once via \code{8-Move\_backward} (Step 17) and returns via \code{7-Move\_forward} (Step 22). Giving a bonus for visiting multiple grid squares would produce wider stage movement.
-\end{qa}
-
-\begin{qa}{Q17. Do you control NAO's eye, ear, or chest LEDs?}
-No. The current code focuses on planning, timing, and physical stability and does not call \code{ALLeds}. Adding \code{ALLeds.post.fadeRGB} calls inside \code{execute\_choreography.py} on move or beat boundaries is a small, optional change if lighting effects are wanted for voting day.
-\end{qa}
-
-\begin{qa}{Q18. How does this project connect to Unibo's \emph{Performing Robots} research?}
-As described in Slides 9, 11, and 22 of \code{NAOPlanningChallenge2627.pdf}, Unibo's \emph{Performing Robots} project (\code{site.unibo.it/performingrobots/en}) studies automatic generation of robotic dance, using the voting-day survey questions and student choreographies to build a dataset for neural artistic evaluation. Our system maps those seven survey criteria into measurable audio features (bar energy, pauses, sections) and physical joint features (velocity, amplitude, pose continuity, leg movement).
-\end{qa}
-
-\begin{qa}{Q19. What keeps the robot from looking stiff between moves?}
-Four choices reduce stiffness: the four full-body custom motifs (\code{motif\_astley\_groove}, \code{motif\_disco\_point}, \code{motif\_beat\_drop}, \code{motif\_groove\_pause}) use coordinated knee-bounce, hip-roll, and ankle angles that return to a common neutral stance; \code{\_pose\_gap} penalizes sharp joint jumps between consecutive moves; \code{\_fluid\_sleep} cuts 1\,s post-TTS gaps between scripts; and module-level keyframe files shift their first keyframe to at least $0.45\,\text{s}$ to blend smoothly from the previous pose.
-\end{qa}
 
 \end{document}
